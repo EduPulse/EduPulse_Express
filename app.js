@@ -3,10 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors')
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var mongoTestRouter = require('./routes/mongotest.js');
+// auth module
+var auth = require('./modules/auth');
+
+// passport configuration
+// const passport = require('passport');
+// const OpenIDStrategy = require('passport-openid').Strategy;
+// passport.use(new OpenIDStrategy({
+//   returnURL: 'http://localhost:9000/auth/openid/return',
+//   realm: 'http://localhost:9000',
+//   profile: true
+// }, function (identifier, profile, done) {
+//   auth.authenticateUser(identifier, profile, done);
+// }));
 
 var app = express();
 
@@ -19,9 +30,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+// app.use(passport.initialize());
+// app.use(passport.session());
+
+// route handlers
+var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');
+var regRouter = require('./routes/reg');
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/auth', authRouter);
+app.use('/reg', regRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
