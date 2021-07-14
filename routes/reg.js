@@ -6,9 +6,9 @@ var router = express.Router();
 
 router.get('/', function(req, res, next) {
   let newUser = new User({
-    name: "EduPulse Admin",
-    personalEmail: "edupulse27@gmail.com",
-    role: "admin"
+    name: "Chathura Wanniarachchi",
+    personalEmail: "wchathuraj@gmail.com",
+    role: "academic"
   });
 
   db.then(
