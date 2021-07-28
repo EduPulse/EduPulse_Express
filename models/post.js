@@ -1,6 +1,14 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
+const voteSchema = new Schema({
+    by: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    }
+}, {timestamps: true});
+
 const versionSchema = new Schema({
     version: {
         type: Number,
@@ -9,26 +17,44 @@ const versionSchema = new Schema({
     },
     title: {
         type: String,
-        required: true,
+        required: true
     },
     coverImage: {
         type: String,
-        required: true,
+        required: true
     },
     content: {
         type: String,
-        required: true,
+        required: true
     },
     readTime: {
         type: Number,
         required: true,
         default: 0
     },
-    tags: [String], //change to ObjectId
+    tags: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Tag'
+        }
+    ],
     contributer: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: false,
+        required: false
+    }
+}, {timestamps: true});
+
+const pinnedBySchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    post: {
+        type: Schema.Types.ObjectId,
+        ref: 'Post',
+        required: true
     }
 }, {timestamps: true});
 
@@ -43,10 +69,56 @@ const articleSchema = new Schema({
         required: true,
         default: "CC0"
     },
-    versions: [
-        versionSchema
+    versions: [ versionSchema ],
+    upvotes: [ voteSchema ],
+    downvotes: [ voteSchema ],
+    pinnedBy: [ pinnedBySchema ],
+    notificationSubscribers: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
     ]
 });
+
+const pinSchema = new Schema({
+    originalPost: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    pinComment: {
+        type: String,
+        required: false
+    }
+});
+
+const commentSchema = new Schema({
+    commenter: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    upvotes: [ voteSchema ],
+    downvotes: [ voteSchema ],
+    notificationSubscribers: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'User'
+        }
+    ],
+    comments: [ commentSchema ],
+    reports: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Report'
+        }
+    ]
+}, {timestamps: true});
 
 const postSchema = new Schema({
     type: {
@@ -57,15 +129,22 @@ const postSchema = new Schema({
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
-        // set: s => (typeof(s) === "string") ? Schema.Types.ObjectId(s) : s
+        required: true
     },
     visibility: {
         type: String,
         required: true,
         default: "visible"
     },
-    article: articleSchema
+    article: articleSchema,
+    pin: pinSchema,
+    comments: commentSchema,
+    reports: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Report',
+        }
+    ]
 }, {timestamps: true})
 
 const Post = mongoose.model('Post', postSchema);
