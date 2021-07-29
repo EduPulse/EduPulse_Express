@@ -111,7 +111,7 @@ const commentSchema = new Schema({
             ref: 'User'
         }
     ],
-    comments: [ commentSchema ],
+    comments: [ this ],
     reports: [
         {
             type: Schema.Types.ObjectId,
