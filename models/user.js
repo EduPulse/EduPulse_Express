@@ -39,8 +39,13 @@ const userSchema = new Schema({
             type: Boolean,
             required: true,
             default: false
-        },
+        }
     }, {timestamps: true}),
+    academicInstitute: {
+        type: Schema.Types.ObjectId,
+        ref: 'Institute',
+        required: false
+    },
     socials: new Schema ({
         linkedin: {
             type: String,
@@ -65,8 +70,7 @@ const userSchema = new Schema({
     }, {timestamps: false}),
     followedBy: [{
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: false
+        ref: 'User'
     }],
     notifications: [new Schema ({
         title: {
