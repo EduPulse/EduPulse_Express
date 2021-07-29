@@ -138,7 +138,7 @@ const postSchema = new Schema({
     },
     article: articleSchema,
     pin: pinSchema,
-    comments: commentSchema,
+    comments: [ commentSchema ],
     reports: [
         {
             type: Schema.Types.ObjectId,
