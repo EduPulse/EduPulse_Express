@@ -8,7 +8,7 @@ router.post('/', function (req, res, next) {
     try {
         let postData = req.body;
         let postID=postData._id.toString();
-        Post.find({_id:postID}).populate('author', 'name personalEmail role profilePicture').exec(function(err, posts) {
+        Post.find({_id:postID}).populate('author', 'name personalEmail role bio profilePicture status university').exec(function(err, posts) {
             if(err) {
                 console.error(err);
                 res.sendStatus(500);

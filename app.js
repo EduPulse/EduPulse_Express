@@ -41,7 +41,11 @@ var regRouter = require('./routes/reg');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
 
+
 var viewArticleRouter = require('./routes/view_article');
+var postCommentRouter = require('./routes/post_comment');
+var getUserData=require('./routes/get_user_data');
+var voteForPost=require('./routes/vote_for_post');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -49,7 +53,12 @@ app.use('/reg', regRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 
-app.use('/view_article',viewArticleRouter),
+app.use('/view_article',viewArticleRouter);
+app.use('/post_comment',postCommentRouter);
+app.use('/get_user_info',getUserData);
+app.use('/vote_for_post',voteForPost);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
