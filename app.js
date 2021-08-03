@@ -46,6 +46,7 @@ var viewArticleRouter = require('./routes/view_article');
 var postCommentRouter = require('./routes/post_comment');
 var getUserData=require('./routes/get_user_data');
 var voteForPost=require('./routes/vote_for_post');
+var addToLibrary=require('./routes/add_to_library');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -55,8 +56,9 @@ app.use('/posts', postsRouter);
 
 app.use('/view_article',viewArticleRouter);
 app.use('/post_comment',postCommentRouter);
-app.use('/get_user_info',getUserData);
+app.use('/get_user_data',getUserData);
 app.use('/vote_for_post',voteForPost);
+app.use('/add_to_library',addToLibrary);
 
 
 

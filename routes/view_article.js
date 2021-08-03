@@ -1,5 +1,4 @@
 const express = require('express');
-const feed = require('../modules/feed');
 const Post = require('../models/post');
 
 var router = express.Router();
@@ -8,12 +7,12 @@ router.post('/', function (req, res, next) {
     try {
         let postData = req.body;
         let postID=postData._id.toString();
-        Post.find({_id:postID}).populate('author', 'name personalEmail role bio profilePicture status university').exec(function(err, posts) {
+        Post.findOne({_id:postID}).populate('author').exec(function(err, result) {
             if(err) {
                 console.error(err);
                 res.sendStatus(500);
             }
-            res.json(posts);
+            res.json({"_id":result._id,"author":result.author,"article":result.article});
         })
     } catch (error) {
         res.sendStatus(500)
