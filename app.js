@@ -46,7 +46,10 @@ var viewArticleRouter = require('./routes/view_article');
 var postCommentRouter = require('./routes/post_comment');
 var getUserData=require('./routes/get_user_data');
 var voteForPost=require('./routes/vote_for_post');
+var voteForComment=require('./routes/vote_for_comment');
 var addToLibrary=require('./routes/add_to_library');
+var writeArticle=require('./routes/wirte_article');
+var tagOperation=require('./routes/tag_operation');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -58,7 +61,10 @@ app.use('/view_article',viewArticleRouter);
 app.use('/post_comment',postCommentRouter);
 app.use('/get_user_data',getUserData);
 app.use('/vote_for_post',voteForPost);
+app.use('/vote_for_comment',voteForComment);
 app.use('/add_to_library',addToLibrary);
+app.use('/write_article',writeArticle);
+app.use('/tag_operation',tagOperation);
 
 
 

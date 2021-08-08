@@ -129,7 +129,8 @@ const postSchema = new Schema({
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // TODO need a confirmation for below commented entry
+        // required: true
     },
     visibility: {
         type: String,
