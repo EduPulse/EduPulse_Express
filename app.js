@@ -50,6 +50,7 @@ var voteForComment=require('./routes/vote_for_comment');
 var addToLibrary=require('./routes/add_to_library');
 var writeArticle=require('./routes/wirte_article');
 var tagOperation=require('./routes/tag_operation');
+var searchOperation=require('./routes/search_operation');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -65,6 +66,7 @@ app.use('/vote_for_comment',voteForComment);
 app.use('/add_to_library',addToLibrary);
 app.use('/write_article',writeArticle);
 app.use('/tag_operation',tagOperation);
+app.use('/search_operation',searchOperation);
 
 
 

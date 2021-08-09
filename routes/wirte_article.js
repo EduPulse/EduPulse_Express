@@ -3,9 +3,11 @@ const Post = require('../models/post');
 const {convert} = require("html-to-text");
 const readingTime = require("reading-time");
 const filter = require("leo-profanity");
+const User = require("../models/user");
 
 var router = express.Router();
 
+// TODO [not sure] add other information of the author
 router.post('/', function (req, res, next) {
     let authorID = req.body.author_ID;
     try {

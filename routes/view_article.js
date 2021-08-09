@@ -12,7 +12,7 @@ router.post('/', function (req, res, next) {
                 console.error(err);
                 res.sendStatus(500);
             }
-            res.json({"_id":result._id,"author":result.author,"article":result.article});
+            res.json(result);
         })
     } catch (error) {
         res.sendStatus(500)
