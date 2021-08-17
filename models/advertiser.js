@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const advertisement = new Schema({
+    starting: {
+        type: Date,
+        required: true
+    },
     validTill: {
         type: Date,
         required: true
@@ -61,6 +65,12 @@ const advertiser = new Schema({
             required: true
         }
     }),
+    avatar: {
+        type: String
+    },
+    cloudinary_id: {
+        type: String
+    },
     advertisements: [ advertisement ]
 }, {timestamps: true})
 

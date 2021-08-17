@@ -111,13 +111,13 @@ const commentSchema = new Schema({
             ref: 'User'
         }
     ],
-    comments: [ commentSchema ],
+    /*comments: [ commentSchema ],
     reports: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Report'
         }
-    ]
+    ]*/
 }, {timestamps: true});
 
 const postSchema = new Schema({
