@@ -37,13 +37,12 @@ router.post('/is_reacted', function (req, res, next) {
         let likeDislike = postedData.like_dislike.toString();
         let query;
         if (likeDislike === 'like') {
-
             query = {$and: [{'article.upvotes.by': userID}, {_id: postID}]};
             Post.findOne(query).populate('post').exec(function (err, result) {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
-                }else{
+                } else {
                     if (result)
                         res.json({"is_upvoted": true})
                     else
@@ -56,7 +55,7 @@ router.post('/is_reacted', function (req, res, next) {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
-                }else{
+                } else {
                     if (result)
                         res.json({"is_downvoted": true})
                     else

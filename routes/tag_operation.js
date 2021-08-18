@@ -20,7 +20,7 @@ router.get('/', function (req, res, next) {
 router.post('/create_tag', function (req, res, next) {
     let tagVerbose = req.body.tag_verbose;
     try {
-        Tag.create({verbose:tagVerbose},function (err, results) {
+        Tag.create({verbose: tagVerbose}, function (err, results) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
@@ -36,7 +36,7 @@ router.post('/create_tag', function (req, res, next) {
 router.post('/verbose_id', function (req, res, next) {
     let tagVerbose = req.body.tag_verbose;
     try {
-        Tag.findOne({verbose:tagVerbose}).populate('tag', '').exec(function (err, results) {
+        Tag.findOne({verbose: tagVerbose}).populate('tag', '').exec(function (err, results) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
@@ -52,7 +52,7 @@ router.post('/verbose_id', function (req, res, next) {
 router.post('/id_verbose', function (req, res, next) {
     let tagID = req.body.tag_id;
     try {
-        Tag.findOne({_id:tagID}).populate('tag', '').exec(function (err, results) {
+        Tag.findOne({_id: tagID}).populate('tag', '').exec(function (err, results) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);

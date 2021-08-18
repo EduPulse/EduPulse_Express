@@ -51,6 +51,7 @@ var addToLibrary=require('./routes/add_to_library');
 var writeArticle=require('./routes/wirte_article');
 var tagOperation=require('./routes/tag_operation');
 var searchOperation=require('./routes/search_operation');
+var dashboardOperation=require('./routes/dashboard_operation');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -67,8 +68,7 @@ app.use('/add_to_library',addToLibrary);
 app.use('/write_article',writeArticle);
 app.use('/tag_operation',tagOperation);
 app.use('/search_operation',searchOperation);
-
-
+app.use('/dashboard_operation',dashboardOperation);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

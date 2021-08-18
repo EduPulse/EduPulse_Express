@@ -66,9 +66,9 @@ router.post('/publish_post', function (req, res) {
     let licence = req.body.post_licence;
     let tagArray = req.body.related_tags;
     let visibility = req.body.post_visibility;
-    let content = req.body.post_contnent;
+    let content = req.body.post_content;
     let title = req.body.post_title;
-    let coverImageLink=req.body.cover_image;
+    let coverImageLink = req.body.cover_image;
 
     const contentPlainText = convert(content, {wordwrap: 130});
 
@@ -76,7 +76,7 @@ router.post('/publish_post', function (req, res) {
     const readTime = readingTime(contentPlainText)["minutes"];
 
     // bad word detection
-    if (!filter.check(title+" "+contentPlainText)) {
+    if (!filter.check(title + " " + contentPlainText)) {
         try {
             let updateQuery = {
                 article: {
@@ -87,7 +87,7 @@ router.post('/publish_post', function (req, res) {
                         coverImage: coverImageLink,
                         tags: tagArray
                     }, license: licence,
-                    status:"published",
+                    status: "published",
                 }, visibility: visibility
             };
             Post.updateOne({_id: postID}, updateQuery).exec((function (err, result) {
@@ -105,5 +105,19 @@ router.post('/publish_post', function (req, res) {
     }
 });
 
+router.post('/make_state_unpublished', function (req, res) {
+    let postID = req.body.post_ID;
+    try {
+        Post.updateOne({_id: postID}, {"article.status": "unpublished"}).exec((function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result);
+        }));
+    } catch (error) {
+        res.sendStatus(500)
+    }
+});
 
 module.exports = router;

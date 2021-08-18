@@ -126,6 +126,11 @@ const postSchema = new Schema({
         required: true,
         default: "article"
     },
+    // TODO add this
+    viewCount:{
+        type:Number,
+        default:0
+    },
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User',
