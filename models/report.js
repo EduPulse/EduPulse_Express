@@ -9,12 +9,36 @@ const reportSchema = new Schema({
     }, 
     type: {
         type: String,
+        enum: [
+            'post',
+            'comment',
+            'user'
+        ],
         required: true
-    }, 
+    },
+    status: {
+        type: String,
+        enum: [
+            'open',
+            'closed',
+            'in review'
+        ],
+        default: "open"
+    },
+    category: {
+        type: String,
+        enum: [
+            'spam',
+            'harassment',
+            'content ownership',
+            'other'
+        ],
+        required: true
+    },
     title: {
         type: String,
         required: true
-    }, 
+    },
     message: {
         type: String,
         required: true
@@ -35,7 +59,11 @@ const reportSchema = new Schema({
         comment: {
             type: Schema.Types.ObjectId,
         }
-    })
+    }),
+    comment: {
+        type: String,
+        required: false
+    }
 }, {timestamps: true})
 
 const Report = mongoose.model('Report', reportSchema);

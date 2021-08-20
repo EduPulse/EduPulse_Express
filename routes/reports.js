@@ -1,29 +1,194 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const Post = require('../models/post');
 const Report = require('../models/report');
+const User = require('../models/user');
+const { info, warn, sys } = require('../modules/log');
+const { APIError } = require('../modules/error');
 
 var router = express.Router();
 
-router.get('/', function (req, res, next) {
-    
-})
+router.get('/general', function (req, res, next) {
+
+    async function getUserInstitute() {
+        return new mongoose.Types.ObjectId("610f93e15196bb08091cab69");
+    }
+
+    (async () => {
+
+        let reports = await Report.aggregate([
+            {$match: {
+                'against.userInstitute': await getUserInstitute(),
+                'status': { $in: ['open', 'in review']}
+            }},
+            {$group: {
+                _id: {post: '$against.post', comment: '$against.comment'},
+                type: { $first: '$type' },
+                count: { $sum: 1 },
+                reports: { $push: '$$ROOT' }
+            }},
+            {$sort: {
+                count: -1
+            }}
+        ])
+        .allowDiskUse(true)
+        .exec();
+
+        reports = await Post.populate(reports, [
+            {path: '_id.post', select: ['author', 'article.status', 'article.license', 'article.versions[0]', 'pin']}
+        ]);
+
+        reports = await User.populate(reports, [
+            {path: '_id.post.author', select: ['name', 'personalEmail', 'academicEmail', 'profilePicture', 'role']},
+            {path: 'reports.reportedBy', select: ['name', 'personalEmail', 'academicEmail', 'profilePicture', 'role']}
+        ]);
+
+        reports = reports.map(x => {
+            x.counts = {
+                total: x.count,
+                open: 0,
+                inReview: 0
+            };
+            delete x.count;
+            x.categories = [];
+            x.reports.forEach(y => {
+                if(y.status === "open") 
+                    x.counts.open += 1;
+                else 
+                    x.counts.inReview +=1;
+                if(!x.categories.includes(y.category)) x.categories.push(y.category);
+            });
+            return x;
+        });
+
+        res.json(reports);
+
+    })().catch (error => {
+        console.error(error);
+        res.sendStatus(500);
+    });
+});
+
+router.get('/admin', function (req, res, next) {
+    Report.find({
+        $or: [{type: "user"}, {type: "institute"}]
+    }).exec(function(err, reports) {
+        if(err) {
+            console.error(err);
+            res.sendStatus(500);
+        }
+        res.json(reports);
+    })
+});
 
 router.post('/', function (req, res, next) {
-    try {
-        let newReport = req.body;
+    (async () => {
+        // default status 500
+        res.status(500);
 
-        const report = new Report(newReport);
-        report.save(function(err) {
-            if(err) {
-                console.error(err);
-                res.status(500).send(err);
-            } else {
-                res.status(200);
+        const session = await mongoose.startSession(); // transaction: session
+        session.startTransaction();
+        sys('Transaction started');
+
+        try {
+
+            // validate report
+            let report = new Report(req.body);
+            if(err = report.validateSync()) {
+                res.status(406);
+                throw err;
             }
-        })
-    } catch (err) {
+            
+            if(report.type === "post") {
+
+                // get active reports for this post
+                try {
+                    var currentReports = (await Report.aggregate([
+                        {$match: {
+                            'against.post': report.against.post,
+                            status: {$ne: 'closed'}
+                        }},
+                        {$count: 'count'}
+                    ]))[0].count;
+                } catch (error) {
+                    res.status(404);
+                    throw APIError('Resource Not Found', `Post not found: Post ${report.against.post} not found`, null, error.toString());
+                }
+
+                // try updating the post and get author info
+                let post = await Post.findOneAndUpdate({ _id: report.against.post }, {
+                    $push: { reports: report._id },
+                    visibility: ((currentReports >= 4) ? 'in review' : 'visible')
+                }, {
+                    session: session,
+                    new: true
+                })
+                .select('author visibility')
+                .populate({
+                    path: 'author',
+                    select: '_id academicInstitute'
+                })
+                .exec();
+
+                // add against fields, then save
+                report.against.user = post.author._id;
+                report.against.userInstitute = post.author.academicInstitute;
+                report = await report.save({session});
+
+                info(`Report, ${report._id} generated to ${report.type}: ${report.against.post}`);
+
+                await session.commitTransaction();
+                session.endSession();
+                sys('Transaction ended')
+                res.sendStatus(200);
+                
+            } else {
+                throw APIError('Not Implemented', 'Only Post is implemented');
+            }
+
+        } catch (error) {
+            await session.abortTransaction();
+            sys('Transaction aborted');
+            session.endSession();
+            throw error;
+        }
+    })().catch(err => {
+        res.send(err);
+        console.error(err);
+    });
+});
+
+router.put('/', (req, res, next) => {
+    (async () => {
+        const json = req.body;
+
+        if(!(json._ids !== undefined && json._ids.length !== 0 && (json.comment !== undefined || json.status !== undefined))) {
+            res.sendStatus(406);
+            return;
+        }
+
+        let update = {};
+        if(json.comment !== undefined) update.comment = json.comment;
+        if(json.status !== undefined) update.status = json.status;
+
+        const result = await Report.updateMany({ _id: { $in: json._ids } }, update, { runValidators: true });
+
+        if(result.nModified > 0) {
+            info(
+                `Reports: ${json._ids.toString()} updated with`
+                + `${((json.status !== undefined) ? ' status: ' + json.status + ';': '')}`
+                + `${((json.comment !== undefined) ? ' comment: ' + json.comment + ';': '')}`
+            );
+            res.sendStatus(200);
+        } else {
+            res.sendStatus(404);
+        }
+
+    })().catch(err => {
         console.error(err);
         res.status(500).send(err);
-    }
+    });
 })
+
 
 module.exports = router;

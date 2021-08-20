@@ -69,6 +69,11 @@ const articleSchema = new Schema({
         required: true,
         default: "CC0"
     },
+    visibleVersion: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     versions: [ versionSchema ],
     upvotes: [ voteSchema ],
     downvotes: [ voteSchema ],
@@ -133,6 +138,12 @@ const postSchema = new Schema({
     },
     visibility: {
         type: String,
+        enum: [
+            'visible',
+            'hidden',
+            'in review',
+            'removed'
+        ],
         required: true,
         default: "visible"
     },
