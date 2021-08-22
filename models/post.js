@@ -69,6 +69,7 @@ const articleSchema = new Schema({
         required: true,
         default: "CC0"
     },
+    current: versionSchema,
     versions: [ versionSchema ],
     upvotes: [ voteSchema ],
     downvotes: [ voteSchema ],

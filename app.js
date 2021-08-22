@@ -52,6 +52,9 @@ var writeArticle=require('./routes/wirte_article');
 var tagOperation=require('./routes/tag_operation');
 var searchOperation=require('./routes/search_operation');
 var dashboardOperation=require('./routes/dashboard_operation');
+var reportOperation=require('./routes/report_operation');
+var postVersion=require('./routes/post_version');
+var pinPost=require('./routes/pin_post')
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -69,6 +72,9 @@ app.use('/write_article',writeArticle);
 app.use('/tag_operation',tagOperation);
 app.use('/search_operation',searchOperation);
 app.use('/dashboard_operation',dashboardOperation);
+app.use('/report_operation',reportOperation);
+app.use('/post_version',postVersion);
+app.use('/pin_post',pinPost);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

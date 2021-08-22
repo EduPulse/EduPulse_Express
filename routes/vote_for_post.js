@@ -10,20 +10,29 @@ router.post('/', function (req, res, next) {
         let likeDislike = postedData.like_dislike.toString();
         let postID = postedData.post_ID.toString();
         let update;
+        let deleteOperation;
 
         if (likeDislike === 'like') {
             update = {$push: {'article.upvotes': {by: userID}}};
-
+            deleteOperation={"article.downvotes.by":userID};
         } else {
             update = {$push: {'article.downvotes': {by: userID}}};
+            deleteOperation={"article.upvotes.by":userID};
         }
         Post.findOne({_id: postID}).update(update).exec(function (err, posts) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
             }
+        });
+        Post.updateOne({$and:[{_id: postID},deleteOperation]}).exec(function (err, posts) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
             res.json(posts);
-        })
+        });
+
     } catch (error) {
         res.sendStatus(500)
     }

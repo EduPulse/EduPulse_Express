@@ -40,7 +40,7 @@ router.post('/real_time_content_save', function (req, res) {
         try {
             Post.updateOne({_id: postID}, {
                 article: {
-                    "versions": {
+                    current: {
                         content: postContent,
                         title: postTitle
                     }
@@ -80,7 +80,7 @@ router.post('/publish_post', function (req, res) {
         try {
             let updateQuery = {
                 article: {
-                    "versions": {
+                    current: {
                         content: content,
                         title: title,
                         readTime: readTime,
