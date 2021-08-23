@@ -41,8 +41,12 @@ var regRouter = require('./routes/reg');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
 
+//////////////////////////////////////////////////////////////////////////
 var updateProfile = require('./routes/update_profile');
 app.use('/update_profile', updateProfile);
+var loggedInUser = require('./routes/loggedIn_User');
+app.use('/loggedIn_User', loggedInUser);
+//////////////////////////////////////////////////////////////////////////
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);

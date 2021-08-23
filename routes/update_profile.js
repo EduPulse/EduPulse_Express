@@ -27,7 +27,7 @@ router.post('/userProfileUpdate', function(req, res) {
         
         // if (req.body.name)
         //     User.findByIdAndUpdate({_id: userID}, { name: req.body.name });
-
+            
         // if (req.body.personalEmail)
         //     User.findByIdAndUpdate({_id: userID}, {  personalEmail: req.body.personalEmail });
 
@@ -57,7 +57,7 @@ router.post('/userProfileUpdate', function(req, res) {
                     res.send(err);  
                     return;  
                 }  
-                res.send({data:"Record has been Updated..!!"});  
+                res.send({data:"Profile has been Updated..!!"});  
             });
     } catch (error) {
         res.sendStatus(500);
@@ -77,6 +77,53 @@ router.post('/social', function (req, res, next) {
         })
     } catch (error) {
         res.sendStatus(500)
+    }
+});
+
+router.post('/socialProfileUpdate', function(req, res) {
+    let userID = req.body.userID;
+
+    try {
+        console.log(req.body);
+        
+        // if (req.body.name)
+        //     User.findByIdAndUpdate({_id: userID}, { name: req.body.name });
+            
+        // if (req.body.personalEmail)
+        //     User.findByIdAndUpdate({_id: userID}, {  personalEmail: req.body.personalEmail });
+
+        // if (req.body.bio)
+        //     User.findByIdAndUpdate({_id: userID}, { bio: req.body.bio })
+
+        // if (req.body.gender)
+        //     User.findByIdAndUpdate({_id: userID}, { gender: req.body.gender })
+
+        // if (req.body.bday) 
+        //     User.findByIdAndUpdate({_id: userID}, { birthday: req.body.bday })
+
+        console.log(req.body.linkedin);
+        console.log(req.body.facebook);
+        console.log(req.body.twitter);
+        console.log(req.body.github);
+        console.log(req.body.personal);
+
+        User.findByIdAndUpdate({_id: userID}, 
+            {
+                linkedin: req.body.linkedin,
+                facebook: req.body.facebook,
+                twitter: req.body.twitter,
+                github: req.body.github,
+                personal: req.body.personal,
+            },
+            function(err) {  
+                if (err) {  
+                    res.send(err);  
+                    return;  
+                }  
+                res.send({data:"Social links have been Updated..!!"});  
+            });
+    } catch (error) {
+        res.sendStatus(500);
     }
 });
 
