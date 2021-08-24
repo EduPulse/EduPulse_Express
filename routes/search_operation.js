@@ -9,7 +9,7 @@ var router = express.Router();
 router.post('/post', function (req, res, next) {
     let searchKey = {$regex: new RegExp("" + req.body.search_key, "i")}
     try {
-        Post.find({$and: [{$or: [{"article.current.title": searchKey}, {"article.current.content": searchKey}]}, {visibility: {$ne: "hidden"}}, {"article.status": "published"},{$or:[{type:"article"},{type:"document"}]}]}).populate('post author', '').exec(function (err, results) {
+        Post.find({$and: [{$or: [{"article.current.title": searchKey}, {"article.current.content": searchKey}]}, {visibility: {$ne: "hidden"}}, {"article.status": "published"}, {$or: [{type: "article"}, {type: "document"}]}]}).populate('post author', '').exec(function (err, results) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);

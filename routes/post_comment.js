@@ -13,7 +13,7 @@ router.post('/', function (req, res, next) {
                 console.error(err);
                 res.sendStatus(500);
             }
-            if(result)
+            if (result)
                 res.json(result.comments);
         })
     } catch (error) {

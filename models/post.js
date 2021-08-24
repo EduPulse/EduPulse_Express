@@ -35,7 +35,7 @@ const versionSchema = new Schema({
     tags: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Tag'
+            // ref: 'Tag'
         }
     ],
     contributer: {

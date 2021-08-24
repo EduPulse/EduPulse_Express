@@ -11,7 +11,7 @@ router.post('/', function (req, res, next) {
         let postID = postData.post_ID.toString();
         let userAuthorID = postData.new_author_ID.toString();
 
-        Post.updateOne({_id: postID}, {$push:{"article.versions[$].title":"$article.current.title"}}).exec(function (err, result) {
+        Post.updateOne({_id: postID}, {$push: {"article.versions[$].title": "$article.current.title"}}).exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);

@@ -11,7 +11,7 @@ router.post('/is_already_pin', function (req, res, next) {
         let postID = postData.post_ID.toString();
         let userID = postData.user_ID.toString();
 
-        Post.find({$and:[{_id:postID},{"article.pinnedBy[0]":{$in:userID}}]}).exec(function (err, result) {
+        Post.find({$and: [{_id: postID}, {"article.pinnedBy[0]": {$in: userID}}]}).exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
