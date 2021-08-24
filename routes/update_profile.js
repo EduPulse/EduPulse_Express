@@ -127,5 +127,4 @@ router.post('/socialProfileUpdate', function(req, res) {
     }
 });
 
-
 module.exports = router;

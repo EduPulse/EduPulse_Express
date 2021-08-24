@@ -44,8 +44,12 @@ var postsRouter = require('./routes/posts');
 //////////////////////////////////////////////////////////////////////////
 var updateProfile = require('./routes/update_profile');
 app.use('/update_profile', updateProfile);
+
 var loggedInUser = require('./routes/loggedIn_User');
 app.use('/loggedIn_User', loggedInUser);
+
+var authorProfile = require('./routes/get_authorProfile');
+app.use('/get_authorProfile', authorProfile);
 //////////////////////////////////////////////////////////////////////////
 
 app.use('/', indexRouter);
