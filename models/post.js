@@ -54,7 +54,8 @@ const pinnedBySchema = new Schema({
     post: {
         type: Schema.Types.ObjectId,
         ref: 'Post',
-        required: true
+        // TODO check this what is the need
+        // required: true
     }
 }, {timestamps: true});
 
@@ -67,7 +68,7 @@ const articleSchema = new Schema({
     license: {
         type: String,
         required: true,
-        default: "CC0"
+        default: "by"
     },
     current: versionSchema,
     versions: [ versionSchema ],
@@ -85,7 +86,7 @@ const articleSchema = new Schema({
 const pinSchema = new Schema({
     originalPost: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Post',
         required: true
     },
     pinComment: {
@@ -141,11 +142,16 @@ const postSchema = new Schema({
     visibility: {
         type: String,
         required: true,
-        default: "visible"
+        default: "Anyone"
     },
     article: articleSchema,
     pin: pinSchema,
-    comments: [commentSchema],
+    comments: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Comment',
+        }
+    ],
     reports: [
         {
             type: Schema.Types.ObjectId,

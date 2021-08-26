@@ -8,7 +8,7 @@ router.post('/get_all_publication', function (req, res, next) {
     try {
         let userID = req.body.user_id.toString();
 
-        Post.find({author: userID}).exec(function (err, result) {
+        Post.find({author: userID}).populate("pin.originalPost", "").exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);

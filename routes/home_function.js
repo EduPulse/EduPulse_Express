@@ -25,7 +25,7 @@ router.post('/get_post_form_followers', function (req, res, next) {
                 visibilityOption = {visibility: "Anyone"}
 
             // take data from post
-            Post.find({$and: [visibilityOption, {"article.status": "published"}, {$or: query}]}).populate('author', '').select(['-comments', '-article.current.content']).sort({"updatedAt": -1}).limit(50).exec(function (err, resultList) {
+            Post.find({$and: [visibilityOption, {$or: [{"article.status": "published"}, {type: "pin"}]}, {$or: query}]}).populate('author pin.originalPost', '').select(['-comments', '-article.current.content']).sort({"updatedAt": -1}).limit(50).exec(function (err, resultList) {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
