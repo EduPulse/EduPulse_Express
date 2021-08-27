@@ -63,12 +63,13 @@ router.post('/real_time_content_save', function (req, res) {
 // TODO publish post option
 router.post('/publish_post', function (req, res) {
     let postID = req.body.post_ID;
-    let licence = req.body.post_licence;
+    let licence = req.body.post_licence.toString();
     let tagArray = req.body.related_tags;
     let visibility = req.body.post_visibility;
     let content = req.body.post_content;
     let title = req.body.post_title;
     let coverImageLink = req.body.cover_image;
+    let contributor = req.body.contributor;
 
     const contentPlainText = convert(content, {wordwrap: 130});
 
@@ -78,24 +79,36 @@ router.post('/publish_post', function (req, res) {
     // bad word detection
     if (!filter.check(title + " " + contentPlainText)) {
         try {
-            let updateQuery = {
-                article: {
-                    current: {
-                        content: content,
-                        title: title,
-                        readTime: readTime,
-                        coverImage: coverImageLink,
-                        tags: tagArray
-                    }, license: licence,
-                    status: "published",
-                }, visibility: visibility
+            let updateQueryPost = {
+                content: content,
+                title: title,
+                contributor: contributor,
+                readTime: readTime,
+                coverImage: coverImageLink,
+                tags: tagArray
             };
-            Post.updateOne({_id: postID}, updateQuery).exec((function (err, result) {
+            let mainQuery;
+            if (licence === "")
+                mainQuery = {article: {current: updateQueryPost, status: "published"}, versions: updateQueryPost};
+            else
+                mainQuery = {
+                    article: {
+                        current: updateQueryPost,
+                        status: "published",
+                        license: licence,
+                        versions: [updateQueryPost]
+                    },
+                    visibility: visibility,
+                };
+            // TODO query fix should do
+            console.log(mainQuery)
+            Post.updateOne({_id: postID}, mainQuery).exec((function (err, result) {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
                 }
                 res.json(result);
+
             }));
         } catch (error) {
             res.sendStatus(500)

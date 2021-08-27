@@ -9,9 +9,12 @@ router.post('/', function (req, res, next) {
     try {
         let postData = req.body;
         let postID = postData.post_ID.toString();
-        let userAuthorID = postData.new_author_ID.toString();
+        let newAuthorID = postData.new_author_ID.toString();
 
-        Post.updateOne({_id: postID}, {$push: {"article.versions[$].title": "$article.current.title"}}).exec(function (err, result) {
+        Post.updateOne({_id: postID}, {
+            "article.current.contributor": newAuthorID,
+            "article.status": "unpublished"
+        }).exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);

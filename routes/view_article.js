@@ -18,7 +18,7 @@ router.post('/', function (req, res, next) {
                 $or: [{visibility: "Anyone"}, {visibility: "Academics Only"}],
                 "article.status": "published"
             };
-        Post.findOne(filer).populate('author tags', '').exec(function (err, result) {
+        Post.findOne(filer).populate('tags author', '').exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
@@ -51,7 +51,7 @@ router.post('/list_latest_posts', function (req, res, next) {
         let postData = req.body;
         let userID = postData.user_ID.toString();
         let postID = postData.post_ID.toString();
-        Post.find({$and: [{author: userID}, {_id: {$ne: postID}}, {"article.status": "published"}]}).limit(5).populate('post', 'article').exec(function (err, result) {
+        Post.find({$and: [{author: {$in: userID}}, {_id: {$ne: postID}}, {"article.status": "published"}]}).limit(5).populate('post', 'article').exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
