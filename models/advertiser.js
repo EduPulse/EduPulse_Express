@@ -14,7 +14,21 @@ const advertisement = new Schema({
         type: String,
         required: true
     },
-    images: [{
+    package: {
+        type: String,
+        required: true
+    },
+    Description: {
+        type: String,
+    },
+    Media: {
+        type: String,
+        required: true
+    },
+    redirectLink: {
+        type: String,
+    },
+    /* images: [{
         type: String,
         required: true
     }],
@@ -47,7 +61,7 @@ const advertisement = new Schema({
             type: String,
             required: true
         },
-    }, {timestamps: true})
+    }, {timestamps: true}) */
 }, {timestamps: true})
 
 const advertiser = new Schema({
@@ -65,12 +79,12 @@ const advertiser = new Schema({
             required: true
         }
     }),
-    avatar: {
+/*     avatar: {
         type: String
     },
     cloudinary_id: {
         type: String
-    },
+    }, */
     advertisements: [ advertisement ]
 }, {timestamps: true})
 

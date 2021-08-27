@@ -49,7 +49,7 @@ app.use('/reg', regRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/accreports',reportsRouter);
-app.use('/newAd',newadRouter);
+app.use('/ad',newadRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
