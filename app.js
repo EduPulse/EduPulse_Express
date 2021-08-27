@@ -50,6 +50,12 @@ app.use('/loggedIn_User', loggedInUser);
 
 var authorProfile = require('./routes/get_authorProfile');
 app.use('/get_authorProfile', authorProfile);
+
+var authorProfilePic = require('./routes/update_profilePic');
+app.use('/update_profilePic', authorProfilePic);
+
+var allTags = require('./routes/all_tags');
+app.use('/all_tags', allTags);
 //////////////////////////////////////////////////////////////////////////
 
 app.use('/', indexRouter);

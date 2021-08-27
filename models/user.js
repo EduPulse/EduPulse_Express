@@ -34,6 +34,7 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+
     academicState: new Schema ({
         state: {
             type: Boolean,
@@ -41,11 +42,13 @@ const userSchema = new Schema({
             default: false
         }
     }, {timestamps: true}),
+
     academicInstitute: {
         type: Schema.Types.ObjectId,
         ref: 'Institute',
         required: false
     },
+
     socials: new Schema ({
         linkedin: {
             type: String,
@@ -68,10 +71,12 @@ const userSchema = new Schema({
             required: false
         },
     }, {timestamps: false}),
+
     followedBy: [{
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
+
     notifications: [new Schema ({
         title: {
             type: String,
@@ -87,6 +92,7 @@ const userSchema = new Schema({
             default: false
         },
     }, {timestamps: true})],
+
     followingTags: [new Schema ({
         tagId: {
             type: Schema.Types.ObjectId,
@@ -98,6 +104,7 @@ const userSchema = new Schema({
             required: false
         }
     }, {timestamps: true})],
+
     subscribedNotifications: [new Schema ({
         contentType: {
             type: String,
@@ -108,6 +115,7 @@ const userSchema = new Schema({
             required: true
         }
     }, {timestamps: true})],
+
     reports: [new Schema ({
         reportId: {
             type: Schema.Types.ObjectId,
@@ -128,17 +136,20 @@ const userSchema = new Schema({
             required: true
         },
     }, {timestamps: true})],
+
     searchHistory: [new Schema ({
         query: {
             type: String,
             required: true
         }
     }, {timestamps: true})],
+
     posts: [{
         type: Schema.Types.ObjectId,
         ref: 'Post',
         required: false
     }],
+
     collections: [new Schema ({
         name: {
             type: String,
@@ -152,6 +163,7 @@ const userSchema = new Schema({
             }
         }, {timestamps: true})]
     }, {timestamps: true})],
+    
 }, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);
