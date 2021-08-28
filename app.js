@@ -41,6 +41,7 @@ var regRouter = require('./routes/reg');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
 var reportsRouter = require('./routes/reports');
+var pendingUsersRouter = require('./routes/pendingUsers');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -48,6 +49,7 @@ app.use('/reg', regRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/reports', reportsRouter);
+app.use('/pending-users', pendingUsersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

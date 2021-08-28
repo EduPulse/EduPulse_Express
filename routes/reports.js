@@ -35,7 +35,7 @@ router.get('/general', function (req, res, next) {
         .exec();
 
         reports = await Post.populate(reports, [
-            {path: '_id.post', select: ['author', 'article.status', 'article.license', 'article.versions[0]', 'pin']}
+            {path: '_id.post', select: ['author', 'article.status', 'article.license', 'article.current', 'pin', 'createdAt']}
         ]);
 
         reports = await User.populate(reports, [
@@ -101,19 +101,20 @@ router.post('/', function (req, res, next) {
             
             if(report.type === "post") {
 
-                // get active reports for this post
-                try {
-                    var currentReports = (await Report.aggregate([
-                        {$match: {
-                            'against.post': report.against.post,
-                            status: {$ne: 'closed'}
-                        }},
-                        {$count: 'count'}
-                    ]))[0].count;
-                } catch (error) {
+                if(!(await Post.exists({_id: report.against.post}))) {
                     res.status(404);
-                    throw APIError('Resource Not Found', `Post not found: Post ${report.against.post} not found`, null, error.toString());
+                    throw APIError('Resource Not Found', `Post not found: Post ${report.against.post} not found`, null, null);
                 }
+
+                // get active reports for this post
+                let reportCount = await Report.aggregate([
+                    {$match: {
+                        'against.post': report.against.post,
+                        status: 'open'
+                    }},
+                    {$count: 'count'}
+                ]);
+                let currentReports = (reportCount.length === 0) ? 0 : reportCount[0].count;
 
                 // try updating the post and get author info
                 let post = await Post.findOneAndUpdate({ _id: report.against.post }, {
@@ -153,40 +154,83 @@ router.post('/', function (req, res, next) {
             throw error;
         }
     })().catch(err => {
-        res.send(err);
+        if(typeof err === 'object' && err.name !== undefined) {
+            res.json(err);
+        } else {
+            res.send(err);
+        }
         console.error(err);
     });
 });
 
 router.put('/', (req, res, next) => {
     (async () => {
-        const json = req.body;
+        // set default status
+        res.status(500)
 
-        if(!(json._ids !== undefined && json._ids.length !== 0 && (json.comment !== undefined || json.status !== undefined))) {
-            res.sendStatus(406);
-            return;
+        const session = await mongoose.startSession(); // transaction: session
+        session.startTransaction();
+        sys('Transaction started');
+
+        try {
+            const json = req.body;
+            
+            if(!(json._ids !== undefined && json._ids.length !== 0 && (json.comment !== undefined || json.status !== undefined))) {
+                res.status(406);
+                throw APIError('Not accepable', 'JSON body is missing (a/some) key value pair(s)');
+            }
+
+            let update = {};
+            if(json.comment !== undefined) update.comment = json.comment;
+            if(json.status !== undefined) update.status = json.status;
+
+            if(json.content && json.content.remove && json.content.type === "post") {
+                let result = await Post.updateOne({ _id: json.content._id }, {visibility: 'removed'}, { runValidators: true }).session(session);
+                if(result.nModified > 0) {
+                    info(`Post: ${json.content._id} removed`)
+                } else {
+                    res.status(404);
+                    throw APIError('Post not found', null);
+                }
+            } else if(json.content && json.content.remove && json.content.type === "comment" && false) { // <----------- update comment
+                let result = await Post.update({ _id: json.content._id }, {visibility: 'removed'}, { runValidators: true }).session(session);
+                if(result.nModified > 0) {
+                    info(`Comment: ${json.content._id} removed`)
+                } else {
+                    res.status(404);
+                    throw APIError('Comment not found', null);
+                }
+            }
+
+            const result = await Report.updateMany({ _id: { $in: json._ids } }, update, { runValidators: true }).session(session);
+
+            if(result.nModified > 0) {
+                info(
+                    `Reports: ${json._ids.toString()} updated with`
+                    + `${((json.status !== undefined) ? ' status: ' + json.status + ';': '')}`
+                    + `${((json.comment !== undefined) ? ' comment: ' + json.comment + ';': '')}`
+                );
+                await session.commitTransaction();
+                session.endSession();
+                sys('Transaction ended')
+                res.sendStatus(200);
+            } else {
+                res.status(404);
+                throw APIError('Report(s) not found', null);
+            }
+        } catch (err) {
+            await session.abortTransaction();
+            sys('Transaction aborted');
+            session.endSession();
+            throw err;
         }
-
-        let update = {};
-        if(json.comment !== undefined) update.comment = json.comment;
-        if(json.status !== undefined) update.status = json.status;
-
-        const result = await Report.updateMany({ _id: { $in: json._ids } }, update, { runValidators: true });
-
-        if(result.nModified > 0) {
-            info(
-                `Reports: ${json._ids.toString()} updated with`
-                + `${((json.status !== undefined) ? ' status: ' + json.status + ';': '')}`
-                + `${((json.comment !== undefined) ? ' comment: ' + json.comment + ';': '')}`
-            );
-            res.sendStatus(200);
-        } else {
-            res.sendStatus(404);
-        }
-
     })().catch(err => {
+        if(typeof err === 'object' && err.name !== undefined) {
+            res.json(err);
+        } else {
+            res.send(err);
+        }
         console.error(err);
-        res.status(500).send(err);
     });
 })
 
