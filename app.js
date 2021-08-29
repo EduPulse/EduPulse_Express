@@ -56,6 +56,9 @@ app.use('/update_profilePic', authorProfilePic);
 
 var allTags = require('./routes/all_tags');
 app.use('/all_tags', allTags);
+
+var reportAuthor = require('./routes/report_author');
+app.use('/report_author', reportAuthor);
 //////////////////////////////////////////////////////////////////////////
 
 app.use('/', indexRouter);
