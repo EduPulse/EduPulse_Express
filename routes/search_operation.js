@@ -9,7 +9,12 @@ var router = express.Router();
 router.post('/post', function (req, res, next) {
     let searchKey = {$regex: new RegExp("" + req.body.search_key, "i")}
     try {
-        Post.find({$and: [{$or: [{"article.current.title": searchKey}, {"article.current.content": searchKey}]}, {visibility: {$ne: "hidden"}}, {"article.status": "published"}, {$or: [{type: "article"}, {type: "document"}]}]}).populate('post author', '').exec(function (err, results) {
+        // create query for filtering condition for search by tag id
+        let filterQuery = {$and: [{$or: [{"article.current.title": searchKey}, {"article.current.content": searchKey}]}, {visibility: {$ne: "hidden"}}, {"article.status": "published"}, {$or: [{type: "article"}, {type: "document"}]}]}
+        if (req.body.search_key.length === 24) {
+            filterQuery = {$and: [{$or: [{"article.current.tags": {$in: req.body.search_key}}, {"article.current.title": searchKey}, {"article.current.content": searchKey}]}, {visibility: {$ne: "hidden"}}, {"article.status": "published"}, {$or: [{type: "article"}, {type: "document"}]}]}
+        }
+        Post.find(filterQuery).populate('post author', '').exec(function (err, results) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
@@ -24,7 +29,12 @@ router.post('/post', function (req, res, next) {
 router.post('/people', function (req, res, next) {
     let searchKey = {$regex: new RegExp("^" + req.body.search_key, "i")}
     try {
-        User.find({$or: [{name: searchKey}, {bio: searchKey}, {university: searchKey}, {status: searchKey}]}).populate('user', '').exec(function (err, results) {
+        // create query for filtering condition for search by tag id
+        let filterQuery = {$or: [{name: searchKey}, {bio: searchKey}, {university: searchKey}, {status: searchKey}]}
+        if (req.body.search_key.length === 24) {
+            filterQuery = {$or: [{_id: req.body.search_key}, {name: searchKey}, {bio: searchKey}, {university: searchKey}, {status: searchKey}]}
+        }
+        User.find(filterQuery).populate('user', '').exec(function (err, results) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
@@ -39,7 +49,12 @@ router.post('/people', function (req, res, next) {
 router.post('/institute', function (req, res, next) {
     let searchKey = {$regex: new RegExp("" + req.body.search_key, "i")}
     try {
-        Institute.find({$or: [{name: searchKey}, {description: searchKey}]}).populate('institute', '').exec(function (err, results) {
+        // create query for filtering condition for search by tag id
+        let filterQuery = {$or: [{name: searchKey}, {description: searchKey}]}
+        if (req.body.search_key.length === 24) {
+            filterQuery = {$or: [{_id: req.body.search_key}, {name: searchKey}, {description: searchKey}]}
+        }
+        Institute.find(filterQuery).populate('institute', '').exec(function (err, results) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);

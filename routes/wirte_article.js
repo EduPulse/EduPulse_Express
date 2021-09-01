@@ -10,19 +10,28 @@ var router = express.Router();
 // TODO [not sure] add other information of the author
 router.post('/', function (req, res, next) {
     let authorID = req.body.author_ID;
+    // get author university
     try {
-        Post.create({
-            type: "article",
-            visibility: "visible",
-            author: authorID,
-            "article.status": "unpublished"
-        }, (function (err, result) {
+        User.find({_id: authorID}).select("academicInstitute").exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
             }
-            res.json(result);
-        }));
+            Post.create({
+                type: "article",
+                visibility: "Anyone",
+                author: authorID,
+                academicInstitute: result[0].academicInstitute,
+                "article.status": "unpublished",
+            }, (function (err, resultCreate) {
+                if (err) {
+                    console.error(err);
+                    res.sendStatus(500);
+                }
+                res.json(resultCreate);
+            }));
+        });
+
     } catch (error) {
         res.sendStatus(500)
     }
@@ -89,26 +98,42 @@ router.post('/publish_post', function (req, res) {
             };
             let mainQuery;
             if (licence === "")
-                mainQuery = {article: {current: updateQueryPost, status: "published"}, versions: updateQueryPost};
+                mainQuery = {article: {current: updateQueryPost, status: "published"}};
             else
+                // mainQuery = {
+                //     article: {
+                //         current: updateQueryPost,
+                //         status: "published",
+                //         license: licence,
+                //     },
+                //     visibility: visibility,
+                // };
                 mainQuery = {
                     article: {
                         current: updateQueryPost,
                         status: "published",
                         license: licence,
-                        versions: [updateQueryPost]
+                        $push: {
+                            versions: updateQueryPost
+                        }
                     },
-                    visibility: visibility,
+                    visibility: visibility
                 };
             // TODO query fix should do
-            console.log(mainQuery)
+            // console.log(updateQueryPost)//{runValidators: true}
             Post.updateOne({_id: postID}, mainQuery).exec((function (err, result) {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
                 }
-                res.json(result);
+                // update version
+                // Post.updateOne({_id: postID}, {article:{ $set:{current: updateQueryPost},$push:{versions: updateQueryPost}}}).exec((function (err, result) {
+                //     if (err) {
+                //         console.error(err);
+                //         res.sendStatus(500);
+                //     }}));
 
+                res.json(result);
             }));
         } catch (error) {
             res.sendStatus(500)

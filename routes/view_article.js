@@ -18,7 +18,7 @@ router.post('/', function (req, res, next) {
                 $or: [{visibility: "Anyone"}, {visibility: "Academics Only"}],
                 "article.status": "published"
             };
-        Post.findOne(filer).populate('tags author', '').exec(function (err, result) {
+        Post.findOne(filer).populate('tags author academicInstitute', '').exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);

@@ -43,7 +43,7 @@ const versionSchema = new Schema({
             // ref: 'Tag'
         }
     ],
-    contributer: {
+    contributor: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: false
@@ -137,6 +137,10 @@ const postSchema = new Schema({
     viewCount:{
         type:Number,
         default:0
+    },
+    academicInstitute:{
+        type: Schema.Types.ObjectId,
+        ref: 'Institute',
     },
     author: {
         type: Schema.Types.ObjectId,
