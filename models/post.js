@@ -12,7 +12,7 @@ const voteSchema = new Schema({
 const versionSchema = new Schema({
     version: {
         type: Number,
-        required: true,
+        required: false,
         default: 0
     },
     contributor: {
@@ -42,12 +42,7 @@ const versionSchema = new Schema({
             type: Schema.Types.ObjectId,
             // ref: 'Tag'
         }
-    ],
-    contributor: {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: false
-    }
+    ]
 }, {timestamps: true});
 
 const pinnedBySchema = new Schema({
@@ -72,7 +67,7 @@ const articleSchema = new Schema({
     },
     license: {
         type: String,
-        required: true,
+        // required: true, //TODO look this
         default: "by"
     },
     current: versionSchema,
@@ -150,7 +145,7 @@ const postSchema = new Schema({
     },
     visibility: {
         type: String,
-        required: true,
+        // required: true, //TODO look this
         default: "Anyone"
     },
     article: articleSchema,

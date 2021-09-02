@@ -1,5 +1,5 @@
 const express = require('express');
-const Post = require('../models/post');
+const Post = require('../../models/post');
 
 var router = express.Router();
 
@@ -11,26 +11,28 @@ router.post('/', function (req, res, next) {
         let postID = postedData.post_ID.toString();
         let update;
         let deleteOperation;
-
+        let deleteSearch;
         if (likeDislike === 'like') {
             update = {$push: {'article.upvotes': {by: userID}}};
-            deleteOperation = {"article.downvotes.by": userID};
+            deleteOperation = {"article.downvotes": {$pull: {$elemMatch: {by: userID}}}};
+            deleteSearch = {"article.downvotes.by": [userID]}
         } else {
             update = {$push: {'article.downvotes': {by: userID}}};
-            deleteOperation = {"article.upvotes.by": userID};
+            deleteOperation = {"article.upvotes": {$pull: {$elemMatch: {by: userID}}}};
+            deleteSearch = {"article.upvotes.by": [userID]}
         }
         Post.findOne({_id: postID}).update(update).exec(function (err, posts) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
             }
-        });
-        Post.updateOne({$and: [{_id: postID}, deleteOperation]}).exec(function (err, posts) {
-            if (err) {
-                console.error(err);
-                res.sendStatus(500);
-            }
-            res.json(posts);
+            Post.updateOne({$and: [{_id: postID}, deleteSearch]}, deleteOperation).exec(function (err, posts) {
+                if (err) {
+                    console.error(err);
+                    res.sendStatus(500);
+                }
+                res.json(posts);
+            });
         });
 
     } catch (error) {

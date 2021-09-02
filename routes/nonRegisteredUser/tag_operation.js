@@ -1,5 +1,5 @@
 const express = require('express');
-const Tag = require('../models/tag');
+const Tag = require('../../models/tag');
 
 var router = express.Router();
 

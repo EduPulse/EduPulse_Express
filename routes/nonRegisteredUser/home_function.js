@@ -1,7 +1,7 @@
 const express = require('express');
-const Post = require('../models/post');
-const User = require('../models/user');
-const Advertiser = require('../models/advertiser');
+const Post = require('../../models/post');
+const User = require('../../models/user');
+const Advertiser = require('../../models/advertiser');
 const {now} = require("mongoose");
 
 var router = express.Router();
@@ -23,7 +23,6 @@ router.post('/get_post_form_followers', function (req, res, next) {
             let visibilityOption = {visibility: "Academics Only"}
             if (result.role !== "academic")
                 visibilityOption = {visibility: "Anyone"}
-
             // take data from post
             Post.find({$and: [visibilityOption, {$or: [{"article.status": "published"}, {type: "pin"}]}, {$or: query}]}).populate('author pin.originalPost', '').select(['-comments', '-article.current.content']).sort({"updatedAt": -1}).limit(50).exec(function (err, resultList) {
                 if (err) {

@@ -41,21 +41,20 @@ var regRouter = require('./routes/reg');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
 
-
-var viewArticleRouter = require('./routes/view_article');
-var postCommentRouter = require('./routes/post_comment');
-var getUserData=require('./routes/get_user_data');
-var voteForPost=require('./routes/vote_for_post');
-var voteForComment=require('./routes/vote_for_comment');
-var addToLibrary=require('./routes/add_to_library');
-var writeArticle=require('./routes/wirte_article');
-var tagOperation=require('./routes/tag_operation');
-var searchOperation=require('./routes/search_operation');
-var dashboardOperation=require('./routes/dashboard_operation');
-var reportOperation=require('./routes/report_operation');
-var postVersion=require('./routes/post_version');
-var pinPost=require('./routes/pin_post');
-var homeFunction=require('./routes/home_function');
+const viewArticleRouter = require('./routes/nonRegisteredUser/view_article');
+const postCommentRouter = require('./routes/registeredUser/post_comment');
+const getUserData=require('./routes/nonRegisteredUser/get_user_data');
+const voteForPost=require('./routes/registeredUser/vote_for_post');
+const voteForComment=require('./routes/registeredUser/vote_for_comment');
+const addToLibrary=require('./routes/registeredUser/add_to_library');
+const writeArticle=require('./routes/academicUser/wirte_article');
+const tagOperation=require('./routes/nonRegisteredUser/tag_operation');
+const searchOperation=require('./routes/nonRegisteredUser/search_operation');
+const dashboardOperation=require('./routes/academicUser/dashboard_operation');
+const reportOperation=require('./routes/registeredUser/report_operation');
+const postVersion=require('./routes/academicUser/post_version');
+const pinPost=require('./routes/registeredUser/pin_post');
+const homeFunction=require('./routes/nonRegisteredUser/home_function');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
