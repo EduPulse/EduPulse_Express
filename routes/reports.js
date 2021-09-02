@@ -69,17 +69,17 @@ router.get('/general', function (req, res, next) {
     });
 });
 
-router.get('/admin', function (req, res, next) {
-    Report.find({
-        $or: [{type: "user"}, {type: "institute"}]
-    }).exec(function(err, reports) {
-        if(err) {
-            console.error(err);
-            res.sendStatus(500);
-        }
-        res.json(reports);
-    })
-});
+// router.get('/admin', function (req, res, next) {
+//     Report.find({
+//         $or: [{type: "user"}, {type: "institute"}]
+//     }).exec(function(err, reports) {
+//         if(err) {
+//             console.error(err);
+//             res.sendStatus(500);
+//         }
+//         res.json(reports);
+//     })
+// });
 
 router.post('/', function (req, res, next) {
     (async () => {

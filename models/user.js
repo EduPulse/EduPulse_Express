@@ -58,7 +58,6 @@ const userSchema = new Schema({
                 'lecturer'
             ],
             required: false,
-            default: 'none'
         }
     }, {timestamps: true, _id: false}),
     socials: new Schema ({

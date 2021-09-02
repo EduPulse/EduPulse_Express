@@ -42,6 +42,7 @@ var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
 var reportsRouter = require('./routes/reports');
 var pendingUsersRouter = require('./routes/pendingUsers');
+var instituteRouter = require('./routes/institute');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -50,6 +51,7 @@ app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
 app.use('/reports', reportsRouter);
 app.use('/pending-users', pendingUsersRouter);
+app.use('/institute', instituteRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

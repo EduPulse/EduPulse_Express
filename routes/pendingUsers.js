@@ -18,7 +18,7 @@ router.get('', function (req, res, next) {
 
         let users = await User.find({
             'academic.state': 'in review',
-            'academic.institute': await getUserInstitute()
+            academicInstitute: await getUserInstitute()
         }, [
             'name', 
             'personalEmail', 
@@ -53,11 +53,12 @@ router.post('/', function (req, res, next) {
             academic: {
                 state: json.state,
                 role: json.role,
-                institute: json.institute
+                institute: json.institute // <--- change????
             }
         }, {runValidators: true});
 
         if(result.nModified > 0) {
+            info(`User ${json._id} is given academic state: ${json.state};` + (json.role ? `role: ${json.role}` : ''));
             res.sendStatus(200);
         } else {
             res.status(404);
@@ -81,19 +82,23 @@ router.put('/', (req, res, next) => {
 
         let json = req.body;
 
-        if(!(json._id && json.state && json.role)) {
+        if(!(json._id && json.state)) {
             res.status(406);
             throw new APIError('Not accepable', 'JSON body is missing (a/some) key value pair(s)')
         }
 
-        let result = await User.updateOne({_id: json._id}, {
+        let update = {
             academic: {
                 state: json.state,
-                role: json.role
             }
-        }, {runValidators: true});
+        }
+
+        if(json.role) update.academic.role = json.role;
+
+        let result = await User.updateOne({_id: json._id}, update, {runValidators: true});
 
         if(result.nModified > 0) {
+            info(`User ${json._id} is given academic state: ${json.state};` + (json.role ? `role: ${json.role}` : ''));
             res.sendStatus(200);
         } else {
             res.status(404);
