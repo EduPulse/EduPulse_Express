@@ -41,11 +41,20 @@ var regRouter = require('./routes/reg');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
 
+var updateProfile = require('./routes/update_profile');
+var loggedInUser = require('./routes/loggedIn_User');
+var authorProfile = require('./routes/get_authorProfile');
+
+
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/reg', regRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
+
+app.use('/update_profile', updateProfile);
+app.use('/loggedIn_User', loggedInUser);
+app.use('/get_authorProfile', authorProfile);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
