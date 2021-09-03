@@ -93,7 +93,7 @@ router.put('/updateAD',upload.single("media"), async function(req,res){
                 }
                 if(ad.adpackage){
                     console.log('ad ekata gya')
-                    const ryu=await ad.findOne(
+                    const ryu= await ad.findOne(
                         {publicName:req.body.client}
                        // {$set:{package:ad.adpackage}},
                         /* function(err,result){
