@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
+const Institute = require('./institute');
 
 const userSchema = new Schema({
     name: {

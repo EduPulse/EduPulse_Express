@@ -40,6 +40,9 @@ var authRouter = require('./routes/auth');
 var regRouter = require('./routes/reg');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
+var reportsRouter = require('./routes/acc_reports');
+var newadRouter = require('./routes/ads');
+var manageModeratorRouter = require('./routes/Moderator');
 
 const viewArticleRouter = require('./routes/nonRegisteredUser/view_article');
 const postCommentRouter = require('./routes/registeredUser/post_comment');
@@ -61,6 +64,9 @@ app.use('/auth', authRouter);
 app.use('/reg', regRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
+app.use('/accreports',reportsRouter);
+app.use('/ad',newadRouter);
+app.use('/Moderators',manageModeratorRouter);
 
 app.use('/view_article',viewArticleRouter);
 app.use('/post_comment',postCommentRouter);
