@@ -19,7 +19,7 @@ router.get('/general', function (req, res, next) {
         let reports = await Report.aggregate([
             {$match: {
                 'against.userInstitute': await getUserInstitute(),
-                'status': { $in: ['open', 'in review']}
+                status: { $in: ['open', 'in review']}
             }},
             {$group: {
                 _id: {post: '$against.post', comment: '$against.comment'},
@@ -69,18 +69,6 @@ router.get('/general', function (req, res, next) {
     });
 });
 
-// router.get('/admin', function (req, res, next) {
-//     Report.find({
-//         $or: [{type: "user"}, {type: "institute"}]
-//     }).exec(function(err, reports) {
-//         if(err) {
-//             console.error(err);
-//             res.sendStatus(500);
-//         }
-//         res.json(reports);
-//     })
-// });
-
 router.post('/', function (req, res, next) {
     (async () => {
         // default status 500
@@ -119,7 +107,7 @@ router.post('/', function (req, res, next) {
                 // try updating the post and get author info
                 let post = await Post.findOneAndUpdate({ _id: report.against.post }, {
                     $push: { reports: report._id },
-                    visibility: ((currentReports >= 4) ? 'in review' : 'visible')
+                    'article.status': ((currentReports >= 4) ? 'in review' : 'published')
                 }, {
                     session: session,
                     new: true
@@ -185,7 +173,7 @@ router.put('/', (req, res, next) => {
             if(json.status !== undefined) update.status = json.status;
 
             if(json.content && json.content.remove && json.content.type === "post") {
-                let result = await Post.updateOne({ _id: json.content._id }, {visibility: 'removed'}, { runValidators: true }).session(session);
+                let result = await Post.updateOne({ _id: json.content._id }, {'article.status': 'removed'}, { runValidators: true }).session(session);
                 if(result.nModified > 0) {
                     info(`Post: ${json.content._id} removed`)
                 } else {
