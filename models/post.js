@@ -50,7 +50,7 @@ const versionSchema = new Schema({
     }
 }, {timestamps: true});
 
-const pinnedBySchema = new Schema([{
+/* const pinnedBySchema = new Schema([{
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -58,7 +58,7 @@ const pinnedBySchema = new Schema([{
         }
     }
     ]
-, {timestamps: true});
+, {timestamps: true}); */
 
 const pinnedBySchema = new Schema({
     user: {
