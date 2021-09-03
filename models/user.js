@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
+const Institute = require('./institute');
 
 const userSchema = new Schema({
     name: {
@@ -91,7 +92,7 @@ const userSchema = new Schema({
         tagId: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: 'Tag'
+            // ref: 'Tag'
         },
         type: {
             type: String,
