@@ -62,6 +62,11 @@ var reportsRouter = require('./routes/reports');
 var pendingUsersRouter = require('./routes/pendingUsers');
 var instituteRouter = require('./routes/institute');
 
+var updateProfile = require('./routes/update_profile');
+var loggedInUser = require('./routes/loggedIn_User');
+var authorProfile = require('./routes/get_authorProfile');
+
+
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/reg', regRouter);
@@ -88,6 +93,10 @@ app.use('/home_function',homeFunction);
 app.use('/reports', reportsRouter);
 app.use('/pending-users', pendingUsersRouter);
 app.use('/institute', instituteRouter);
+
+app.use('/update_profile', updateProfile);
+app.use('/loggedIn_User', loggedInUser);
+app.use('/get_authorProfile', authorProfile);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
