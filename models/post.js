@@ -12,8 +12,13 @@ const voteSchema = new Schema({
 const versionSchema = new Schema({
     version: {
         type: Number,
-        required: true,
+        required: false,
         default: 0
+    },
+    contributor: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     },
     title: {
         type: String,
@@ -38,12 +43,22 @@ const versionSchema = new Schema({
             ref: 'Tag'
         }
     ],
-    contributer: {
+    contributor: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: false
     }
 }, {timestamps: true});
+
+const pinnedBySchema = new Schema([{
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+            // ref: 'Tag'
+        }
+    }
+    ]
+, {timestamps: true});
 
 const pinnedBySchema = new Schema({
     user: {
@@ -54,7 +69,8 @@ const pinnedBySchema = new Schema({
     post: {
         type: Schema.Types.ObjectId,
         ref: 'Post',
-        required: true
+        // TODO check this what is the need
+        // required: true
     }
 }, {timestamps: true});
 
@@ -66,9 +82,10 @@ const articleSchema = new Schema({
     },
     license: {
         type: String,
-        required: true,
-        default: "CC0"
+        // required: true, //TODO look this
+        default: "by"
     },
+    current: versionSchema,
     versions: [ versionSchema ],
     upvotes: [ voteSchema ],
     downvotes: [ voteSchema ],
@@ -84,7 +101,7 @@ const articleSchema = new Schema({
 const pinSchema = new Schema({
     originalPost: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Post',
         required: true
     },
     pinComment: {
@@ -126,19 +143,34 @@ const postSchema = new Schema({
         required: true,
         default: "article"
     },
+    // TODO add this
+    viewCount:{
+        type:Number,
+        default:0
+    },
+    academicInstitute:{
+        type: Schema.Types.ObjectId,
+        ref: 'Institute',
+    },
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        // TODO need a confirmation for below commented entry
+        // required: true
     },
     visibility: {
         type: String,
-        required: true,
-        default: "visible"
+        // required: true, //TODO look this
+        default: "Anyone"
     },
     article: articleSchema,
     pin: pinSchema,
-    comments: [ commentSchema ],
+    comments: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Comment',
+        }
+    ],
     reports: [
         {
             type: Schema.Types.ObjectId,

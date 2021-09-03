@@ -91,7 +91,7 @@ const userSchema = new Schema({
         tagId: {
             type: Schema.Types.ObjectId,
             required: true,
-            ref: 'Tag'
+            // ref: 'Tag'
         },
         type: {
             type: String,
