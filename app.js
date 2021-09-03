@@ -40,7 +40,7 @@ var authRouter = require('./routes/auth');
 var regRouter = require('./routes/reg');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
-var reportsRouter = require('./routes/acc_reports');
+var accReportsRouter = require('./routes/acc_reports');
 var newadRouter = require('./routes/ads');
 var manageModeratorRouter = require('./routes/Moderator');
 
@@ -58,13 +58,16 @@ const reportOperation=require('./routes/registeredUser/report_operation');
 const postVersion=require('./routes/academicUser/post_version');
 const pinPost=require('./routes/registeredUser/pin_post');
 const homeFunction=require('./routes/nonRegisteredUser/home_function');
+var reportsRouter = require('./routes/reports');
+var pendingUsersRouter = require('./routes/pendingUsers');
+var instituteRouter = require('./routes/institute');
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/reg', regRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);
-app.use('/accreports',reportsRouter);
+app.use('/accreports',accReportsRouter);
 app.use('/ad',newadRouter);
 app.use('/Moderators',manageModeratorRouter);
 
@@ -82,6 +85,9 @@ app.use('/report_operation',reportOperation);
 app.use('/post_version',postVersion);
 app.use('/pin_post',pinPost);
 app.use('/home_function',homeFunction);
+app.use('/reports', reportsRouter);
+app.use('/pending-users', pendingUsersRouter);
+app.use('/institute', instituteRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

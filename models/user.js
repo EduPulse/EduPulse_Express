@@ -35,18 +35,32 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    academicState: new Schema ({
+    academic: new Schema ({
         state: {
-            type: Boolean,
-            required: true,
-            default: false
+            type: String,
+            enum: [
+                'none',
+                'in review',
+                'academic'
+            ],
+            required: false,
+            default: 'none'
+        },
+        institute: {
+            type: Schema.Types.ObjectId,
+            ref: 'Institute',
+            required: false
+        },
+        role: {
+            type: String,
+            enum: [
+                'undergraduate',
+                'staff',
+                'lecturer'
+            ],
+            required: false,
         }
-    }, {timestamps: true}),
-    academicInstitute: {
-        type: Schema.Types.ObjectId,
-        ref: 'Institute',
-        required: false
-    },
+    }, {timestamps: true, _id: false}),
     socials: new Schema ({
         linkedin: {
             type: String,

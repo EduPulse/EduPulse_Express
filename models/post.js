@@ -77,8 +77,15 @@ const pinnedBySchema = new Schema({
 const articleSchema = new Schema({
     status: {
         type: String,
+        default: "published",
+        enum: [
+            'published',
+            'hidden',
+            'in review',
+            'removed'
+        ],
         required: true,
-        default: "published"
+        default: "visible"
     },
     license: {
         type: String,
@@ -160,8 +167,11 @@ const postSchema = new Schema({
     },
     visibility: {
         type: String,
-        // required: true, //TODO look this
-        default: "Anyone"
+        default: "Anyone",
+        enum: [
+            'Anyone',
+            'Academic Only'
+        ]
     },
     article: articleSchema,
     pin: pinSchema,

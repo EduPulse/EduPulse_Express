@@ -25,7 +25,7 @@ const instituteSchema = new Schema({
         }, 
         phoneNos: [{
             type: String,
-            required: true
+            required: false
         }], 
         address: new Schema({
             line1: {
