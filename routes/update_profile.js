@@ -19,38 +19,21 @@ router.post('/user', function (req, res, next) {
     }
 });
 
-router.post('/userProfileUpdate', function(req, res) {
-    let userID = req.body.userID;
-
+router.post('/userProfileUpdate', function (req, res, next) {
     try {
         console.log(req.body);
-        
-        // if (req.body.name)
-        //     User.findByIdAndUpdate({_id: userID}, { name: req.body.name });
-            
-        // if (req.body.personalEmail)
-        //     User.findByIdAndUpdate({_id: userID}, {  personalEmail: req.body.personalEmail });
-
-        // if (req.body.bio)
-        //     User.findByIdAndUpdate({_id: userID}, { bio: req.body.bio })
-
-        // if (req.body.gender)
-        //     User.findByIdAndUpdate({_id: userID}, { gender: req.body.gender })
-
-        // if (req.body.bday) 
-        //     User.findByIdAndUpdate({_id: userID}, { birthday: req.body.bday })
-
+        let userID = req.body.userID;
+       
         User.findByIdAndUpdate({_id: userID}, 
             {
                 name: req.body.name,
-                personalEmail: req.body.personalEmail,
-                //academicEmail: req.body.academicEmail,
-                // profilePicture: req.body.profilePicture,
                 bio: req.body.bio,
+                // univeristy: req.body.univeristy,
+                faculty: req.body.faculty,
+                academicEmail: req.body.academicEmail,
+                personalEmail: req.body.personalEmail,
                 gender: req.body.gender,
                 birthday: req.body.bday,
-                // univeristy: req.body.univeristy.toString(),
-                // faculty: req.body.faculty.toString(),
             },
             function(err) {  
                 if (err) {  
@@ -60,7 +43,7 @@ router.post('/userProfileUpdate', function(req, res) {
                 res.send({data:"Profile has been Updated..!!"});  
             });
     } catch (error) {
-        res.sendStatus(500);
+        res.sendStatus(500)
     }
 });
 
