@@ -43,6 +43,7 @@ var postsRouter = require('./routes/posts');
 var accReportsRouter = require('./routes/acc_reports');
 var newadRouter = require('./routes/ads');
 var manageModeratorRouter = require('./routes/Moderator');
+var chartsRouter = require('./routes/charts');
 
 const viewArticleRouter = require('./routes/nonRegisteredUser/view_article');
 const postCommentRouter = require('./routes/registeredUser/post_comment');
@@ -75,6 +76,7 @@ app.use('/posts', postsRouter);
 app.use('/accreports',accReportsRouter);
 app.use('/ad',newadRouter);
 app.use('/Moderators',manageModeratorRouter);
+app.use('/charts',chartsRouter);
 
 app.use('/view_article',viewArticleRouter);
 app.use('/post_comment',postCommentRouter);
