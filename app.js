@@ -66,9 +66,13 @@ var updateProfile = require('./routes/update_profile');
 var loggedInUser = require('./routes/loggedIn_User');
 var authorProfile = require('./routes/get_authorProfile');
 
+/////////////////////////////////////////////////////////
 var loggedInUser = require('./routes/loggedIn_User');
-
 app.use('/loggedIn_User', loggedInUser);
+
+var authorProfileActions = require('./routes/author_profile');
+app.use('/author_profile', authorProfileActions);
+/////////////////////////////////////////////////////////
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
