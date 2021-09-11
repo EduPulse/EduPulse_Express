@@ -101,4 +101,23 @@ router.post('/get_followedBy', function (req, res, next) {
     }
 });
 
+router.post('/get_socialAccounts', function (req, res, next) {
+    try {
+        let userID = req.body.user_id.toString();
+
+        console.log("Logged in user social accounts: ");
+        console.log(userID);
+
+        User.findOne({_id: userID}).exec(function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result.socials);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+});
+
 module.exports = router;
