@@ -9,15 +9,16 @@ router.post('/', function (req, res, next) {
         let postData = req.body;
         let postID = postData._id.toString();
         let visibility = postData.visibility.toString();
-        let filer = {}
+        let filer;
         if (visibility === "Anyone")
             filer = {_id: postID, $or: [{visibility: "Anyone"}], "article.status": "published"};
-        else if (visibility === "Academics Only")
+        else
             filer = {
                 _id: postID,
                 $or: [{visibility: "Anyone"}, {visibility: "Academics Only"}],
                 "article.status": "published"
             };
+        console.log(filer)
         Post.findOne(filer).populate('tags author academicInstitute', '').exec(function (err, result) {
             if (err) {
                 console.error(err);
