@@ -33,6 +33,13 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
+        enum: [
+            'none',
+            'admin',
+            'moderator',
+            'general'
+        ],
+        default: 'none',
         required: true
     },
     academic: new Schema ({

@@ -8,7 +8,10 @@ function authenticateUser(email) {
                     console.error(err);
                     reject (err);
                 };
-                resolve(user);
+                if(user !== null)
+                    resolve(user);
+                else
+                    reject(null);
             });
         } catch (error) {
             console.error(error);

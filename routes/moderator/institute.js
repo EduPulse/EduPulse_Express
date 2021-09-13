@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Institute = require('../models/institute')
+const Institute = require('../../models/institute')
 
 var router = express.Router();
 

@@ -1,10 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Post = require('../models/post');
-const Report = require('../models/report');
-const User = require('../models/user');
-const { info, warn, sys } = require('../modules/log');
-const { APIError } = require('../modules/error');
+const Post = require('../../models/post');
+const Report = require('../../models/report');
+const User = require('../../models/user');
+const { info, warn, sys } = require('../../modules/log');
+const { APIError } = require('../../modules/error');
 
 var router = express.Router();
 

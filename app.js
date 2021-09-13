@@ -1,23 +1,15 @@
-var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var createError = require('http-errors');
 var logger = require('morgan');
-var cors = require('cors')
+var cors = require('cors');
+const session = require('express-session');
+const passport = require('passport');
 
-// auth module
-var auth = require('./modules/auth');
-
-// passport configuration
-// const passport = require('passport');
-// const OpenIDStrategy = require('passport-openid').Strategy;
-// passport.use(new OpenIDStrategy({
-//   returnURL: 'http://localhost:9000/auth/openid/return',
-//   realm: 'http://localhost:9000',
-//   profile: true
-// }, function (identifier, profile, done) {
-//   auth.authenticateUser(identifier, profile, done);
-// }));
+// boot config
+const config = require('./config/config');
+const passportConfig = require('./config/passport');
 
 var app = express();
 
@@ -25,14 +17,29 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+//passport
+app.use(session({
+  secret: config.sessionSecret,
+  resave: true,
+  saveUninitialized: true
+}))
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
-// app.use(passport.initialize());
-// app.use(passport.session());
+
+// open-id
+var openIDRouter = require('./routes/openID');
+app.use('/openid', openIDRouter);
+
+//api
+var APIRouter = require('./routes/API');
+app.use('/api', APIRouter);
 
 // route handlers
 var indexRouter = require('./routes/index');
@@ -58,14 +65,15 @@ const reportOperation=require('./routes/registeredUser/report_operation');
 const postVersion=require('./routes/academicUser/post_version');
 const pinPost=require('./routes/registeredUser/pin_post');
 const homeFunction=require('./routes/nonRegisteredUser/home_function');
-var reportsRouter = require('./routes/reports');
-var pendingUsersRouter = require('./routes/pendingUsers');
-var instituteRouter = require('./routes/institute');
+
+// moderator
+var reportsRouter = require('./routes/moderator/reports');
+var pendingUsersRouter = require('./routes/moderator/pendingUsers');
+var instituteRouter = require('./routes/moderator/institute');
 
 var updateProfile = require('./routes/update_profile');
 var loggedInUser = require('./routes/loggedIn_User');
 var authorProfile = require('./routes/get_authorProfile');
-
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
@@ -90,6 +98,8 @@ app.use('/report_operation',reportOperation);
 app.use('/post_version',postVersion);
 app.use('/pin_post',pinPost);
 app.use('/home_function',homeFunction);
+
+// moderator
 app.use('/reports', reportsRouter);
 app.use('/pending-users', pendingUsersRouter);
 app.use('/institute', instituteRouter);
