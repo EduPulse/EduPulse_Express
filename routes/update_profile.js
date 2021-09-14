@@ -51,7 +51,7 @@ router.post('/socialAccountsUpdate', function (req, res, next) {
                     res.send(err);  
                     return;  
                 }  
-                res.send({data:"Social accounts are Updated..!!"});  
+                res.send({data:"Social accounts are Updated..!!"});
             });
     } catch (error) {
         res.sendStatus(500)
@@ -60,7 +60,21 @@ router.post('/socialAccountsUpdate', function (req, res, next) {
 
 router.post('/updateFollowingTags', function(req, res, next){
     try {
-        console.log(req.body);
+        const user_id = req.body.userID;
+        
+        let dataList=[];
+        req.body.followingTags.map(data => {
+            dataList.push({tagId:data})
+        })
+        User.findOneAndUpdate({_id: user_id}, {
+            followingTags:dataList
+        }).exec((function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result);
+        }));
     } catch (error) {
         res.sendStatus(500)
     }
