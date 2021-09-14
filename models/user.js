@@ -17,7 +17,8 @@ const userSchema = new Schema({
     },
     profilePicture: {
         type: String,
-        required: true
+        required: false,
+        default: null
     },
     bio: {
         type: String,
@@ -29,7 +30,8 @@ const userSchema = new Schema({
     },
     birthday: {
         type: Date,
-        required: false
+        required: false,
+        default: null
     },
     role: {
         type: String,
@@ -37,6 +39,7 @@ const userSchema = new Schema({
             'none',
             'admin',
             'moderator',
+            'academic',
             'general'
         ],
         default: 'none',

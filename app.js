@@ -43,7 +43,6 @@ app.use('/api', APIRouter);
 
 // route handlers
 var indexRouter = require('./routes/index');
-var authRouter = require('./routes/auth');
 var regRouter = require('./routes/reg');
 var usersRouter = require('./routes/users');
 var postsRouter = require('./routes/posts');
@@ -76,7 +75,6 @@ var loggedInUser = require('./routes/loggedIn_User');
 var authorProfile = require('./routes/get_authorProfile');
 
 app.use('/', indexRouter);
-app.use('/auth', authRouter);
 app.use('/reg', regRouter);
 app.use('/users', usersRouter);
 app.use('/posts', postsRouter);

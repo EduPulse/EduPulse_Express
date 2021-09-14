@@ -26,5 +26,6 @@ module.exports = Object.freeze ({
         }
     },
     applicationRoot: 'http://localhost:9000',
+    webRoot: 'http://localhost:3000',
     sessionSecret: process.env.SESSION_SECRET
 });
