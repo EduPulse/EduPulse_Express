@@ -89,8 +89,8 @@ function assertAuthenticated(req, res, next) {
     }
 };
 
-function assertRole(role, req, res, next) {
-    if(req && req.isAuthenticated() && req.user && req.user.role === role) {
+function assertRole(roles, req, res, next) {
+    if(req && req.isAuthenticated() && req.user && (roles.indexOf(req.user.role) > -1)) {
         next();
     } else {
         res.sendStatus(403);
