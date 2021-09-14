@@ -63,6 +63,20 @@ router.post('/get_all_tags', function (req, res, next) {
     }
 });
 
+router.post('/get_allTags', function (req, res, next) {
+    try {
+        Tag.find({}).exec(function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+});
+
 router.post('/get_followingUsers', function (req, res, next) {
     try {
         let userID = req.body.user_id.toString();
@@ -103,7 +117,8 @@ router.post('/get_followedBy', function (req, res, next) {
 
 router.post('/get_socialAccounts', function (req, res, next) {
     try {
-        let userID = req.body.user_id.toString();
+        console.log("request body: ", req.body);
+        let userID = req.body._id.toString();
 
         console.log("Logged in user social accounts: ");
         console.log(userID);
