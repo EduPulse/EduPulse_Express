@@ -3,22 +3,6 @@ const User = require('../models/user');
 
 var router = express.Router();
 
-router.post('/user', function (req, res, next) {
-    try {
-        let userData = req.body;
-        let userID = userData._id.toString();
-        User.findOne({_id: userID}).populate('').exec(function(err, result) {
-            if(err) {
-                console.error(err);
-                res.sendStatus(500);
-            }
-            res.json(result);
-        })
-    } catch (error) {
-        res.sendStatus(500)
-    }
-});
-
 router.post('/userProfileUpdate', function (req, res, next) {
     try {
         console.log(req.body);
@@ -47,36 +31,20 @@ router.post('/userProfileUpdate', function (req, res, next) {
     }
 });
 
-router.post('/social', function (req, res, next) {
-    try {
-        let userData = req.body;
-        let userID = userData._id.toString();
-        User.findOne({_id:userID}).populate('').exec(function(err, result) {
-            if(err) {
-                console.error(err);
-                res.sendStatus(500);
-            }
-            res.json(result);
-        })
-    } catch (error) {
-        res.sendStatus(500)
-    }
-});
-
 router.post('/socialAccountsUpdate', function (req, res, next) {
     try {
-        console.log(req.body);
+        console.log("Social update request body: " ,req.body);
         let userID = req.body.userID;
-       
+
         User.findByIdAndUpdate({_id: userID}, 
             {
-                socials: [ 
-                    {linkedin: req.body.linkedin}, 
-                    {facebook: req.body.facebook}, 
-                    {twitter: req.body.twitter}, 
-                    {github: req.body.github}, 
-                    {personal: req.body.personal}
-                ]
+                socials: {
+                    linkedin: req.body.linkedin, 
+                    facebook: req.body.facebook, 
+                    twitter: req.body.twitter, 
+                    github: req.body.github, 
+                    personal: req.body.personal
+                }
             },
             function(err) {  
                 if (err) {  
@@ -89,5 +57,13 @@ router.post('/socialAccountsUpdate', function (req, res, next) {
         res.sendStatus(500)
     }
 });
+
+router.post('/updateFollowingTags', function(req, res, next){
+    try {
+        console.log(req.body);
+    } catch (error) {
+        res.sendStatus(500)
+    }
+})
 
 module.exports = router;
