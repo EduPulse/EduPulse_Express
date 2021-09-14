@@ -170,7 +170,7 @@ const postSchema = new Schema({
         default: "Anyone",
         enum: [
             'Anyone',
-            'Academic Only'
+            'Academics Only'
         ]
     },
     article: articleSchema,

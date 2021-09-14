@@ -9,7 +9,6 @@ const cloudinary = require("../../modules/cloudinary");
 
 var router = express.Router();
 
-// TODO [not sure] add other information of the author
 router.post('/', function (req, res, next) {
     let authorID = req.body.author_ID;
     // get author university
