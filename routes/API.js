@@ -2,7 +2,11 @@ const { Router } = require("express");
 
 const router = Router();
 
-// moderator
+// any user
+var notificationRouter = require('./notifications');
+router.use('/notifications', notificationRouter);
+
+// moderator only
 var reportsRouter = require('./moderator/reports');
 router.use('/reports', reportsRouter);
 var pendingUsersRouter = require('./moderator/pendingUsers');

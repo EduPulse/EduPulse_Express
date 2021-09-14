@@ -48,10 +48,14 @@ router.post('/azure/finish',
     }
 );
 
-router.get('/logout', function (req, res, next) {
-    req.logout();
-    res.redirect(config.webRoot + '?signout=true')
-});
+router.get('/logout', 
+    auth.assertAuthenticated,
+    function (req, res, next) {
+        userLogout(req.user._id);
+        req.logout();
+        res.redirect(config.webRoot + '?signout=true');
+    }
+);
 
 router.get('/user', 
     auth.assertAuthenticated,
