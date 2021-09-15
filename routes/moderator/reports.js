@@ -5,13 +5,19 @@ const Report = require('../../models/report');
 const User = require('../../models/user');
 const { info, warn, sys } = require('../../modules/log');
 const { APIError } = require('../../modules/error');
+const auth = require('../../modules/auth');
 
 var router = express.Router();
 
-router.get('/general', function (req, res, next) {
+router.get('/', auth.assertModerator, function (req, res, next) {
 
     async function getUserInstitute() {
-        return new mongoose.Types.ObjectId("610f93e15196bb08091cab69");
+        let user = await User.findOne({ _id: req.user._id }, 'academicInstitute');
+        if(user && user.academicInstitute) {
+            return user.academicInstitute;
+        } else {
+            return null;
+        }
     }
 
     (async () => {
@@ -69,7 +75,7 @@ router.get('/general', function (req, res, next) {
     });
 });
 
-router.post('/', function (req, res, next) {
+router.post('/', auth.assertAuthenticated, function (req, res, next) {
     (async () => {
         // default status 500
         res.status(500);
@@ -82,6 +88,7 @@ router.post('/', function (req, res, next) {
 
             // validate report
             let report = new Report(req.body);
+            report.reportedBy = req.user._id;
             if(err = report.validateSync()) {
                 res.status(406);
                 throw err;
@@ -151,7 +158,7 @@ router.post('/', function (req, res, next) {
     });
 });
 
-router.put('/', (req, res, next) => {
+router.put('/', auth.assertModerator, (req, res, next) => {
     (async () => {
         // set default status
         res.status(500)

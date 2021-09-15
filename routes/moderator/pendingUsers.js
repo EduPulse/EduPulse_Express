@@ -5,13 +5,19 @@ const Report = require('../../models/report');
 const User = require('../../models/user');
 const { info, warn, sys } = require('../../modules/log');
 const { APIError } = require('../../modules/error');
+const auth = require('../../modules/auth');
 
 var router = express.Router();
 
-router.get('', function (req, res, next) {
+router.get('', auth.assertModerator, function (req, res, next) {
 
     async function getUserInstitute() {
-        return new mongoose.Types.ObjectId("610f93e15196bb08091cab69");
+        let user = await User.findOne({ _id: req.user._id }, 'academicInstitute');
+        if(user && user.academicInstitute) {
+            return user.academicInstitute;
+        } else {
+            return null;
+        }
     }
 
     (async () => {
@@ -37,7 +43,7 @@ router.get('', function (req, res, next) {
 });
 
 // academic email verification
-router.post('/', function (req, res, next) {
+router.post('/', auth.assertAuthenticated, function (req, res, next) {
     (async () => {
         // default status 500
         res.status(500);
@@ -49,7 +55,7 @@ router.post('/', function (req, res, next) {
             throw new APIError('Not accepable', 'JSON body is missing (a/some) key value pair(s)')
         }
 
-        let result = await User.updateOne({_id: json._id}, {
+        let result = await User.updateOne({_id: req.user._id}, {
             academic: {
                 state: json.state,
                 role: json.role,
@@ -75,7 +81,7 @@ router.post('/', function (req, res, next) {
     });
 });
 
-router.put('/', (req, res, next) => {
+router.put('/', auth.assertModerator, (req, res, next) => {
     (async () => {
         // default status 500
         res.status(500);

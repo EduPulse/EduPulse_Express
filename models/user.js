@@ -17,7 +17,8 @@ const userSchema = new Schema({
     },
     profilePicture: {
         type: String,
-        required: true
+        required: false,
+        default: null
     },
     bio: {
         type: String,
@@ -29,7 +30,8 @@ const userSchema = new Schema({
     },
     birthday: {
         type: Date,
-        required: false
+        required: false,
+        default: null
     },
     role: {
         type: String,
@@ -37,10 +39,16 @@ const userSchema = new Schema({
             'none',
             'admin',
             'moderator',
+            'academic',
             'general'
         ],
         default: 'none',
         required: true
+    },
+    academicInstitute: {
+        type: Schema.Types.ObjectId,
+        ref: 'Institute',
+        required: false
     },
     academic: new Schema ({
         state: {
@@ -52,11 +60,6 @@ const userSchema = new Schema({
             ],
             required: false,
             default: 'none'
-        },
-        institute: {
-            type: Schema.Types.ObjectId,
-            ref: 'Institute',
-            required: false
         },
         role: {
             type: String,
@@ -104,9 +107,14 @@ const userSchema = new Schema({
             required: false
         },
         status: {
-            type: Boolean,
+            type: String,
+            enum: [
+                'generated',
+                'pushed',
+                'viewed'
+            ],
             required: false,
-            default: false
+            default: 'generated'
         },
     }, {timestamps: true})],
     followingTags: [new Schema ({
