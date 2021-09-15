@@ -27,5 +27,15 @@ module.exports = Object.freeze ({
     },
     applicationRoot: 'http://localhost:9000',
     webRoot: 'http://localhost:3000',
-    sessionSecret: process.env.SESSION_SECRET
+    sessionSecret: process.env.SESSION_SECRET,
+
+    // **** Dummy user info for authentication bypass ****
+    USEDUMMYUSER: true, // In production this should be **FALSE**
+    DUMMYUSER: {
+        profilePicture: "https://www.discordavatars.com/wp-content/uploads/2020/05/454302316162580490.jpg",
+        role: "moderator",
+        _id: "60ecfe51395a1704a42d8cae",
+        name: "Chalaka Kumarasinghe",
+        personalEmail: "sachinthakac@gmail.com"
+    }
 });

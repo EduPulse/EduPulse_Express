@@ -82,6 +82,14 @@ function createNewUser(email, name, profilePicture) {
 };
 
 function assertAuthenticated(req, res, next) {
+    
+	// USE DUMMY USER ????
+	if(config.USEDUMMYUSER) {
+		console.log('\x1b[31m', 'USING DUMMY USER FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED');
+        req.user = config.DUMMYUSER;
+		next();
+	}
+
     if(req && req.isAuthenticated()) {
         next();
     } else {
@@ -90,7 +98,14 @@ function assertAuthenticated(req, res, next) {
 };
 
 function assertRole(roles, req, res, next) {
-    if(req && req.isAuthenticated() && req.user && (roles.indexOf(req.user.role) > -1)) {
+
+    // USE DUMMY USER ????
+	if(config.USEDUMMYUSER) {
+		console.log('\x1b[31m', 'USING DUMMY USER FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED');
+        req.user = config.DUMMYUSER;
+	}
+
+    if(req && (config.USEDUMMYUSER || req.isAuthenticated()) && req.user && (roles.indexOf(req.user.role) > -1)) {
         next();
     } else {
         res.sendStatus(403);

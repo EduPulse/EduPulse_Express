@@ -63,6 +63,7 @@ passport.serializeUser(function (user, done) {
 });
 
 passport.deserializeUser(function (id, done) {
+
 	auth.findAuthenticatedUser(id).then(user => {
 		if(user !== null) {
 			console.log(user);
