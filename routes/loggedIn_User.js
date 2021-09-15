@@ -84,13 +84,20 @@ router.post('/get_followingUsers', function (req, res, next) {
         console.log("Logged in user following users: ");
         console.log(userID);
 
-        User.findOne({_id: userID}).exec(function (err, result) {
+        User.find({"followedBy": userID}).exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
             }
-            res.json(result.following);
+            res.json(result);
         })
+        // User.findOne({_id: userID}).exec(function (err, result) {
+        //     if (err) {
+        //         console.error(err);
+        //         res.sendStatus(500);
+        //     }
+        //     res.json(result.following);
+        // })
     } catch (error) {
         res.sendStatus(500)
     }
@@ -134,5 +141,72 @@ router.post('/get_socialAccounts', function (req, res, next) {
         res.sendStatus(500)
     }
 });
+
+router.post('/get_followAuthor', function (req, res, next) {
+    console.log(req.body);
+    try {
+        let userID = req.body.user_ID.toString();
+        let writerID = req.body.writer_ID.toString();
+        User.findOne({$and: [
+                {_id: writerID}, 
+                {"followedBy": userID}
+            ]}).exec(function (err, result) {
+                if (err) {
+                    console.error(err);
+                    res.sendStatus(500);
+                }
+                if (result)
+                    res.json({is_followed: true});
+                else
+                    res.json({is_followed: false});
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+})
+
+router.post('/set_followAuthor', function (req, res, next) {
+    console.log(req.body);
+    try {
+        let userID = req.body.user_ID.toString();
+        let writerID = req.body.writer_ID.toString();
+        User.updateOne({_id: writerID}, 
+                {$addToSet: 
+                    {followedBy: {_id: userID}}
+                }
+            ).exec(function (err, result) {
+                if (err) {
+                    console.error(err);
+                    res.sendStatus(500);
+                }
+                res.json(result);
+            }
+        )
+    } catch (error) {
+        res.sendStatus(500)
+    }
+})
+
+router.post('/set_unFollowAuthor', function (req, res, next) {
+    console.log(req.body);
+    try {
+        let userID = req.body.user_ID.toString();
+        let writerID = req.body.writer_ID.toString();
+        User.updateOne({_id: writerID}, 
+                {$pull:
+                    {followedBy: userID}
+                }
+            ).exec(function (err, result) {
+                if (err) {
+                    console.error(err);
+                    res.sendStatus(500);
+                }
+                res.json(result);
+            }
+        )
+    } catch (error) {
+        res.sendStatus(500)
+    }
+})
 
 module.exports = router;
