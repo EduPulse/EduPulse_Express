@@ -8,15 +8,15 @@ router.post('/report_author', async function (req, res, next) {
     try {
         console.log("Report req body: ", req.body);
         
-        // const instance = new Report ({
-        //     reportedBy: req.body.reported_by,
-        //     type: req.body.report_type,
-        //     title: req.body.report_title,
-        //     message: req.body.report_reason,
-        //     against: {user: req.body.reported_author}
-        // });
+        const instance = new Report ({
+            reportedBy: req.body.reported_by,
+            type: req.body.report_type,
+            title: req.body.report_title,
+            message: req.body.report_reason,
+            against: {user: req.body.reported_author}
+        });
 
-        // await instance.save().then(res.send({data:"Report recorded in report model..!!"}));
+        await instance.save().then(res.send({data:"Report recorded in report model..!!"}));
 
         await User.findOneAndUpdate(
             {_id: req.body.reported_author},
@@ -26,33 +26,30 @@ router.post('/report_author', async function (req, res, next) {
                     message: req.body.report_reason,
                 }]
             }},
-        ).exec((
-            function(err, result) {
+        ).exec((function(err, result) {
                 if (err) {  
                     res.send(err);  
                     return;  
                 }
+                let reportCount = 0;
+                result.reports.map(report => {
+                    reportCount = reportCount + 1
+                })
+                console.log("RESULT COUNT: ", reportCount)
+                if (reportCount >= 10) {
+                    console.log("ACCOUNT ON HOLDDDDDDDD");
+                    User.findOneAndUpdate(
+                        {_id: req.body.reported_author},
+                        {accountStatus: "onHold"}
+                    ).exec((function(err, res){
+                        if (err) {
+                            console.error(err);
+                            res.sendStatus(500);
+                        }
+                        console.log("ACCOUNT STATUS: ", result.accountStatus);
+                    }))
+                }
                 res.json(result);
-                // const count = User.findById({_id: req.body.reported_author}).select('reports');
-                // console.log("Count: ", count.body);
-                // else {
-                //     const reportCount = []; 
-                //     reportCount = User.findById(req.body.reported_author).select('reports');
-                //     console.log("num of reports: ", reportCount)
-                //     if (reportCount == 10) {
-                //         User.findOneAndUpdate({_id: req.body.reported_author}, {
-                //             accountStatus: "onHold"
-                //         },
-                //         function(err) {
-                //             if (err) {
-                //                 res.send(err);  
-                //                 return;  
-                //             }
-                //             res.json(result);
-                //         }
-                //         )
-                //     }
-                // }
             }
         ))
     } catch (error) {
