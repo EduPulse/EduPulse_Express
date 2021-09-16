@@ -16,7 +16,7 @@ router.post('/report_author', async function (req, res, next) {
             against: {user: req.body.reported_author}
         });
 
-        await instance.save().then(res.send({data:"Report recorded in report model..!!"}));
+        await instance.save();
 
         await User.findOneAndUpdate(
             {_id: req.body.reported_author},
@@ -31,12 +31,12 @@ router.post('/report_author', async function (req, res, next) {
                     res.send(err);  
                     return;  
                 }
-                let reportCount = 0;
+                let reportCount = 1;
                 result.reports.map(report => {
                     reportCount = reportCount + 1
                 })
                 console.log("RESULT COUNT: ", reportCount)
-                if (reportCount >= 10) {
+                if (reportCount == 10) {
                     console.log("ACCOUNT ON HOLDDDDDDDD");
                     User.findOneAndUpdate(
                         {_id: req.body.reported_author},
