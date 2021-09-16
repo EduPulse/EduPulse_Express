@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/user');
 const Post = require('../models/post');
 const Tag = require('../models/tag');
+const Institute = require('../models/institute');
 
 var router = express.Router();
 
@@ -204,6 +205,22 @@ router.post('/set_unFollowAuthor', function (req, res, next) {
                 res.json(result);
             }
         )
+    } catch (error) {
+        res.sendStatus(500)
+    }
+})
+
+router.post('/get_university', function (req, res, next) {
+    console.log(req.body);
+    try {
+        let uniID = req.body.university_id.toString();
+        Institute.findOne({_id: uniID}).populate('').exec(function(err, result) {
+            if(err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result);
+        })
     } catch (error) {
         res.sendStatus(500)
     }
