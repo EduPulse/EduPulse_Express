@@ -1,9 +1,33 @@
 const express = require('express');
 const Post = require('../../models/post');
 const User = require('../../models/user');
+const {sendNotification} = require("../../modules/notifications");
 
 var router = express.Router();
 
+const makeNotificationForPin = (postID,reactedUserID) => {
+    User.findOne({_id: reactedUserID}).select(["name"]).exec(function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+
+        Post.findOne({_id:postID}).select(["article.versions"]).exec(function (err, resultAuthors) {
+            if (err) {
+                console.error(err);
+            }
+            let contactList=[];
+            resultAuthors.article.versions.map(data=>contactList.push(data.contributor))
+
+            let descriptionObject={
+                post_id:postID,
+                user_or_author_id:reactedUserID,
+                message:result.name+" pined your(contributed) publication.",
+            }
+
+            sendNotification(contactList,"reaction",JSON.stringify(descriptionObject))
+        })
+    })
+}
 
 router.post('/is_already_pin', function (req, res, next) {
     try {
@@ -47,6 +71,8 @@ router.post('/make_post_pin', function (req, res, next) {
                     res.sendStatus(500);
                 }
                 res.json(result);
+                // send notification for pin
+                makeNotificationForPin(postID,userID)
             }));
 
         });

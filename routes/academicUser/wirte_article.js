@@ -6,8 +6,26 @@ const filter = require("leo-profanity");
 const User = require("../../models/user");
 const upload = require("../../modules/multer");
 const cloudinary = require("../../modules/cloudinary");
+const {sendNotification} = require("../../modules/notifications");
 
 var router = express.Router();
+
+const makeNotificationForPost = (postID, userID) => {
+    // get all fallowing users
+    User.findOne({_id: userID}).select(["followedBy", "name"]).exec(function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+        let descriptionObject = {
+            post_id: postID,
+            user_or_author_id: userID,
+            message: result.name + " published a new article.",
+        }
+        console.log(descriptionObject);
+        sendNotification(result.followedBy, "publication", JSON.stringify(descriptionObject))
+    })
+}
+
 
 router.post('/', function (req, res, next) {
     let authorID = req.body.author_ID;
@@ -118,6 +136,8 @@ router.post('/publish_post', function (req, res) {
                     console.error(err);
                     res.sendStatus(500);
                 }
+                // calling notification making function
+                makeNotificationForPost(postID, contributor)
                 res.json(result);
             }));
         } catch (error) {
@@ -164,6 +184,7 @@ router.post('/publish_post_version', function (req, res) {
                     res.sendStatus(500);
                 }
                 res.json(result);
+
             }));
 
         } catch (error) {

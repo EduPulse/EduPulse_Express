@@ -6,8 +6,25 @@ const filter = require("leo-profanity");
 const User = require("../../models/user");
 const upload = require("../../modules/multer");
 const cloudinary = require("../../modules/cloudinary");
+const {sendNotification} = require("../../modules/notifications");
 
 var router = express.Router();
+
+const makeNotificationForMediaPublication = (postID, userID) => {
+    // get all fallowing users
+    User.findOne({_id: userID}).select(["followedBy", "name"]).exec(function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+        let descriptionObject = {
+            post_id: postID,
+            user_or_author_id: userID,
+            message: result.name + " published a media file to EduPulse.",
+        }
+        console.log(descriptionObject);
+        sendNotification(result.followedBy, "publication", JSON.stringify(descriptionObject))
+    })
+}
 
 router.post('/initiate_publication', function (req, res, next) {
     let authorID = req.body.author_ID;
@@ -81,6 +98,7 @@ router.post('/publish_media_version', function (req, res) {
                 res.sendStatus(500);
             }
             res.json(result);
+            makeNotificationForMediaPublication(postID, authorID)
         }));
 
     } catch (error) {

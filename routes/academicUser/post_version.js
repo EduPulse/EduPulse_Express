@@ -4,9 +4,45 @@ const User = require('../../models/user');
 const {convert} = require("html-to-text");
 const readingTime = require("reading-time");
 const filter = require("leo-profanity");
+const {sendNotification} = require("../../modules/notifications");
 
 var router = express.Router();
 
+const makeNotificationForPostVersion = (postID, userID) => {
+    // get all fallowing users
+    User.findOne({_id: userID}).select(["followedBy", "name"]).exec(function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+        let descriptionObject = {
+            post_id: postID,
+            user_or_author_id: userID,
+            message: result.name + " versioned a post.",
+        }
+        console.log(descriptionObject);
+        sendNotification(result.followedBy, "publication", JSON.stringify(descriptionObject))
+    })
+}
+const sendNotificationForOriginalAuthor = (postID, userID) => {
+    // get all fallowing users
+    Post.findOne({_id: postID}).select(["author"]).exec(function (err, resultAuthor) {
+        if (err) {
+            console.error(err);
+        }
+        User.findOne({_id: userID}).select(["followedBy", "name"]).exec(function (err, result) {
+            if (err) {
+                console.error(err);
+            }
+            let descriptionObject = {
+                post_id: postID,
+                user_or_author_id: userID,
+                message: result.name + " versioned your post.",
+            }
+            console.log(descriptionObject);
+            sendNotification(resultAuthor.author, "publication", JSON.stringify(descriptionObject))
+        })
+    })
+}
 
 router.post('/', function (req, res, next) {
     try {
@@ -99,6 +135,10 @@ router.post('/save_version', function (req, res, next) {
                     res.sendStatus(500);
                 }
                 res.json(result);
+                // send notification for contributor's followers
+                makeNotificationForPostVersion(postID, contributor)
+                // send notification for the original author
+                sendNotificationForOriginalAuthor(postID, contributor)
             }));
 
 
