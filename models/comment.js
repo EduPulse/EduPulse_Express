@@ -19,6 +19,18 @@ const commentSchema = new Schema({
         type: String,
         required: true
     },
+    status: {
+        type: String,
+        default: "published",
+        enum: [
+            'published',
+            'hidden',
+            'in review',
+            'removed'
+        ],
+        required: true,
+        default: "published"
+    },
     upvotes: [ voteSchema ],
     downvotes: [ voteSchema ],
     notificationSubscribers: [
