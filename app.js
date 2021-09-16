@@ -34,6 +34,10 @@ app.use(cors());
 // app.use(passport.initialize());
 // app.use(passport.session());
 
+//api
+/* var APIRouter = require('./routes/API');
+app.use('/api', APIRouter); */
+
 // route handlers
 var indexRouter = require('./routes/index');
 var authRouter = require('./routes/auth');
@@ -44,6 +48,7 @@ var accReportsRouter = require('./routes/acc_reports');
 var newadRouter = require('./routes/ads');
 var manageModeratorRouter = require('./routes/Moderator');
 var chartsRouter = require('./routes/charts');
+var logsRouter = require('./routes/logs');
 
 const viewArticleRouter = require('./routes/nonRegisteredUser/view_article');
 const postCommentRouter = require('./routes/registeredUser/post_comment');
@@ -77,6 +82,7 @@ app.use('/accreports',accReportsRouter);
 app.use('/ad',newadRouter);
 app.use('/Moderators',manageModeratorRouter);
 app.use('/charts',chartsRouter);
+app.use('/savelog',logsRouter);
 
 app.use('/view_article',viewArticleRouter);
 app.use('/post_comment',postCommentRouter);

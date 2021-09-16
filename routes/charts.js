@@ -1,6 +1,7 @@
 const express = require('express');
 var router = express.Router();
 const user = require('../models/user');
+const log = require('../models/log');
 
 router.get('/totalusers',async function(req,res){
     try{
@@ -30,21 +31,6 @@ router.get('/totalusers',async function(req,res){
 
 router.get('/userRegistrations',async (req,resp)=>{
     try{
-       /*  const d = new Date();
-        var x = d.getDay();
-        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-        
-        for(var i=7;i>=1;i--){
-            if(x-i>=0){
-                daysArray.push(days[x-i])
-            }
-            else{
-                daysArray.push(days[7+(x-i)])
-            }
-        }
-
-        const daysArray=[0,0,0,0,0,0,0]; */
         var dt = new Date();
         dt.setDate(dt.getDate()-8);
 
@@ -58,10 +44,93 @@ router.get('/userRegistrations',async (req,resp)=>{
             }
           ]).sort({ _id: 'asc' });
           
-        console.log(res);
         resp.send(res);
 
         //new Date(createdAt).toLocaleString()
+    }
+    catch(err){
+        resp.sendStatus(500)
+    }
+})
+
+router.get('/userLogins',async (req,resp)=>{
+    try{
+        var dt = new Date();
+        dt.setDate(dt.getDate()-8);
+        var data ={academic:null,general:null};
+        
+        //general user logins
+        const res1 = await log.aggregate([
+            { $match: 
+                    { "v":{"$regex" :"general","$options": "i" }}
+            },
+            { $group: {
+                _id: {$dateToString :{format: "%Y-%m-%d", date: { $toDate: "$_id" }}} ,
+                count:{
+                    $sum:1
+                }}
+            }
+          ]).sort({ _id: 'desc' }).limit(7);
+        
+        //academic user logins
+        const res2 = await log.aggregate([
+            { $match: 
+                    { "v":{"$regex" :"academic","$options": "i" }}
+            },
+            { $group: {
+                _id: {$dateToString :{format: "%Y-%m-%d", date: { $toDate: "$_id" }}} ,
+                count:{
+                    $sum:1
+                }}
+            }
+          ]).sort({ _id: 'desc' }).limit(7);
+        
+        
+            data.general=res1;
+            data.academic=res2;
+            resp.send(data);
+    }
+    catch(err){
+        resp.sendStatus(500)
+    }
+})
+
+router.get('/liveUsers',async (req,resp)=>{
+    try{
+        var dt = new Date();
+        dt.setDate(dt.getDate()-8);
+
+        var data ={academic:null,general:null};
+
+        const res1 = await log.aggregate([
+            { $match: 
+                    { "v":{"$regex" :"general","$options": "i" }}
+            },
+            { $group: {
+                _id: {$dateToString :{format: "%Y-%m-%dT%H:%M", date: { $toDate: "$_id" }}} ,
+                count:{
+                    $sum:1
+                }}
+            }
+          ]).sort({ _id: 'desc' }).limit(7);
+        
+
+        const res2 = await log.aggregate([
+            { $match: 
+                    { "v":{"$regex" :"academic","$options": "i" }}
+            },
+            { $group: {
+                _id: {$dateToString :{format: "%Y-%m-%dT%H:%M", date: { $toDate: "$_id" }}} ,
+                count:{
+                    $sum:1
+                }}
+            }
+          ]).sort({ _id: 'desc' }).limit(7);
+        
+        
+            data.general=res1;
+            data.academic=res2;
+            resp.send(data);
     }
     catch(err){
         resp.sendStatus(500)

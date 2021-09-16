@@ -23,9 +23,14 @@ const error = (verbose) => {
     save('ERROR', verbose);
 };
 
+const userLogin = (verbose) => {
+    save('LOGIN', verbose);
+};
+
 module.exports = {
     info,
     warn,
     error,
-    sys
+    sys,
+    userLogin
 }

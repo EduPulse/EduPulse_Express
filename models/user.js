@@ -35,6 +35,9 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    accountStatus: {
+        type: String,
+    },
     academic: new Schema ({
         state: {
             type: String,
