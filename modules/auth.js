@@ -85,7 +85,7 @@ function assertAuthenticated(req, res, next) {
     
 	// USE DUMMY USER ????
 	if(config.USEDUMMYUSER) {
-		console.log('\x1b[31m', 'USING DUMMY USER FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED');
+		console.log('\x1b[31m', 'USING DUMMY USER FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED', '\x1b[0m');
         req.user = config.DUMMYUSER;
 		next();
 	}
@@ -101,7 +101,7 @@ function assertRole(roles, req, res, next) {
 
     // USE DUMMY USER ????
 	if(config.USEDUMMYUSER) {
-		console.log('\x1b[31m', 'USING DUMMY USER FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED');
+		console.log('\x1b[31m', 'USING DUMMY USER FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED', '\x1b[0m');
         req.user = config.DUMMYUSER;
 	}
 

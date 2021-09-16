@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Post = require('../../models/post');
+const Comment = require('../../models/comment');
 const Report = require('../../models/report');
 const User = require('../../models/user');
 const { info, warn, sys } = require('../../modules/log');
@@ -44,8 +45,13 @@ router.get('/', auth.assertModerator, function (req, res, next) {
             {path: '_id.post', select: ['author', 'article.status', 'article.license', 'article.current', 'pin', 'createdAt']}
         ]);
 
+        reports = await Comment.populate(reports, [
+            {path: '_id.comment', select: ['commenter', 'content', 'createdAt']}
+        ]);
+
         reports = await User.populate(reports, [
             {path: '_id.post.author', select: ['name', 'personalEmail', 'academicEmail', 'profilePicture', 'role']},
+            {path: '_id.comment.commenter', select: ['name', 'personalEmail', 'academicEmail', 'profilePicture', 'role']},
             {path: 'reports.reportedBy', select: ['name', 'personalEmail', 'academicEmail', 'profilePicture', 'role']}
         ]);
 
@@ -119,7 +125,7 @@ router.post('/', auth.assertAuthenticated, function (req, res, next) {
                     session: session,
                     new: true
                 })
-                .select('author visibility')
+                .select('author article.status')
                 .populate({
                     path: 'author',
                     select: '_id academicInstitute'
@@ -138,8 +144,56 @@ router.post('/', auth.assertAuthenticated, function (req, res, next) {
                 sys('Transaction ended')
                 res.sendStatus(200);
                 
+            } else if(report.type === "comment") {
+
+                if(!(await Comment.exists({_id: report.against.comment}))) {
+                    res.status(404);
+                    throw APIError('Resource Not Found', `Post not found: Comment ${report.against.comment} not found`, null, null);
+                }
+
+                // get active reports for this post
+                let reportCount = await Report.aggregate([
+                    {$match: {
+                        'against.comment': report.against.comment,
+                        status: 'open'
+                    }},
+                    {$count: 'count'}
+                ]);
+                let currentReports = (reportCount.length === 0) ? 0 : reportCount[0].count;
+
+                // try updating the post and get author info
+                let comment = await Comment.findOneAndUpdate({ _id: report.against.comment }, {
+                    $push: { reports: report._id },
+                    'status': ((currentReports >= 4) ? 'in review' : 'published')
+                }, {
+                    session: session,
+                    new: true
+                })
+                .select('commenter status')
+                .populate({
+                    path: 'commenter',
+                    select: '_id academicInstitute'
+                })
+                .exec();
+
+                // add against fields, then save
+                report.against.user = comment.commenter._id;
+                report.against.userInstitute = comment.commenter.academicInstitute;
+                report = await report.save({session});
+
+                if(report.type === 'post') {
+                    info(`Report, ${report._id} generated to post: ${report.against.post}`);
+                } else {
+                    info(`Report, ${report._id} generated to comment: ${report.against.comment}`);
+                }
+
+                await session.commitTransaction();
+                session.endSession();
+                sys('Transaction ended')
+                res.sendStatus(200);
+                
             } else {
-                throw APIError('Not Implemented', 'Only Post is implemented');
+                throw APIError('Not Implemented', 'Only Post and Comment is implemented');
             }
 
         } catch (error) {
@@ -187,8 +241,8 @@ router.put('/', auth.assertModerator, (req, res, next) => {
                     res.status(404);
                     throw APIError('Post not found', null);
                 }
-            } else if(json.content && json.content.remove && json.content.type === "comment" && false) { // <----------- update comment
-                let result = await Post.update({ _id: json.content._id }, {visibility: 'removed'}, { runValidators: true }).session(session);
+            } else if(json.content && json.content.remove && json.content.type === "comment") {
+                let result = await Comment.updateOne({ _id: json.content._id }, {status: 'removed'}, { runValidators: true }).session(session);
                 if(result.nModified > 0) {
                     info(`Comment: ${json.content._id} removed`)
                 } else {
