@@ -4,6 +4,33 @@ const Comment = require('../../models/comment');
 
 var router = express.Router();
 let mongoose = require('mongoose');
+const User = require("../../models/user");
+const {sendNotification} = require("../../modules/notifications");
+
+
+const makeNotificationComment = (postID,commentedUserID) => {
+    User.findOne({_id: commentedUserID}).select(["name"]).exec(function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+
+        Post.findOne({_id:postID}).select(["article.versions"]).exec(function (err, resultAuthors) {
+            if (err) {
+                console.error(err);
+            }
+            let contactList=[];
+            resultAuthors.article.versions.map(data=>contactList.push(data.contributor))
+
+            let descriptionObject={
+                post_id:postID,
+                user_or_author_id:commentedUserID,
+                message:result.name+" commented on your(contributed) publication.",
+            }
+
+            sendNotification(contactList,"reaction",JSON.stringify(descriptionObject))
+        })
+    })
+}
 
 router.post('/', function (req, res, next) {
     try {
@@ -43,6 +70,7 @@ router.post('/writeComment', function (req, res, next) {
                     res.sendStatus(500);
                 }
                 res.json(posts);
+                makeNotificationComment(postID,commenter)
             })
         }))
 

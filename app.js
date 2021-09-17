@@ -56,8 +56,10 @@ const searchOperation=require('./routes/nonRegisteredUser/search_operation');
 const dashboardOperation=require('./routes/academicUser/dashboard_operation');
 const reportOperation=require('./routes/registeredUser/report_operation');
 const postVersion=require('./routes/academicUser/post_version');
+const getTopAuthors=require('./routes/nonRegisteredUser/get_top_authors')
 const pinPost=require('./routes/registeredUser/pin_post');
 const homeFunction=require('./routes/nonRegisteredUser/home_function');
+const publishMedia=require('./routes/academicUser/publish_media')
 var reportsRouter = require('./routes/reports');
 var pendingUsersRouter = require('./routes/pendingUsers');
 var instituteRouter = require('./routes/institute');
@@ -90,12 +92,14 @@ app.use('/vote_for_post',voteForPost);
 app.use('/vote_for_comment',voteForComment);
 app.use('/add_to_library',addToLibrary);
 app.use('/write_article',writeArticle);
+app.use('/publish_media',publishMedia);
 app.use('/tag_operation',tagOperation);
 app.use('/search_operation',searchOperation);
 app.use('/dashboard_operation',dashboardOperation);
 app.use('/report_operation',reportOperation);
 app.use('/post_version',postVersion);
 app.use('/pin_post',pinPost);
+app.use('/get_top_authors',getTopAuthors);
 app.use('/home_function',homeFunction);
 app.use('/reports', reportsRouter);
 app.use('/pending-users', pendingUsersRouter);
