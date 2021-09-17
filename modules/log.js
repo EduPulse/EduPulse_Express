@@ -27,10 +27,6 @@ const userLogin = (verbose) => {
     save('LOGIN', verbose);
 };
 
-const userLogout = (verbose) => {
-    save('LOGOUT', verbose);
-};
-
 module.exports = {
     info,
     warn,

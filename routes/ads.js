@@ -79,81 +79,97 @@ router.post('/getAD',function(req,res){
 })
 
 //update ad
-router.put('/updateAD',upload.single("media"), async function(req,res){
-    try{
+router.put('/updateAD',upload.single("media"),async function(req,res){
+
             console.log(req.body);
-            const ad = req.body;
-            if(ad.starting||ad.validTill||ad.adpackage||ad.type||ad.Description||ad.redirectLink||req.file.path){
-                console.log('gya')
-                if(ad.starting){
-                    
+            const adv = req.body;
+
+            if(adv.startDate||adv.endDate||adv.adpackage||adv.type||adv.description||adv.redirectLink||req.file.path){
+                if(adv.startDate){
+                    try{
+                        await ad.findOneAndUpdate(
+                            {publicName:adv.client , advertisements:{$elemMatch:{_id:adv.id}}},
+                            {$set:{"advertisements.$.starting":adv.startDate}}
+                        )
+                        .exec()
+                    }
+                    catch(err){
+                        res.sendStatus(500)
+                    }
                 }
-                if(ad.validTill){
-                    
+                if(adv.endDate){
+                    try{
+                        await ad.findOneAndUpdate(
+                            {publicName:adv.client , advertisements:{$elemMatch:{_id:adv.id}}},
+                            {$set:{"advertisements.$.validTill":adv.endDate}}
+                        )
+                        .exec()
+                    }
+                    catch(err){
+                        res.sendStatus(500)
+                    }
                 }
-                if(ad.adpackage){
-                    console.log('ad ekata gya')
-                    const ryu= await ad.findOne(
-                        {publicName:req.body.client}
-                       // {$set:{package:ad.adpackage}},
-                        /* function(err,result){
-                            if(err){
-                                res.send(err);
-                            }
-                            else{
-                                res.send(result);
-                            }
-                        } */
-                    )
-                    const specials = ryu.specials
-                    console.log(specials)
+                if(adv.adpackage){
+                    try {
+                        await ad.findOneAndUpdate(
+                            {publicName:adv.client , advertisements:{$elemMatch:{_id:adv.id}}},
+                            {"advertisements.$.package":adv.adpackage}
+                        )
+                        .exec()
+                    }
+                    catch(err){
+                        res.sendStatus(500)
+                    }
                 }
-                if(ad.type&&req.file.path){
-                    
+                
+                if(adv.advertType && req.file.path){
+                    try{
+                        var result=null;
+                        if(adv.advertType=="Video"){
+                            result =  await cloudinary.uploader.upload(req.file.path ,{resource_type: "video", eager_async: true,folder: 'Ads_Media/Videos',unique_filename: true});
+                        }
+                        else{
+                            result =  await cloudinary.uploader.upload(req.file.path,{folder: 'Ads_Media/Images',unique_filename: true});
+                        }
+                        await ad.findOneAndUpdate(
+                            {publicName:adv.client , advertisements:{$elemMatch:{_id:adv.id}}},
+                            {$set:{"advertisements.$.Media":result.secure_url,"advertisements.$.type":adv.advertType}}
+                        )
+                        .exec()
+                    }
+                    catch(err){
+                        res.sendStatus(500)
+                    }
                 }
-                if(ad.Description){
-                    
+                if(adv.description){
+                    try{
+                        await ad.updateOne(
+                            {publicName:adv.client , advertisements:{$elemMatch:{_id:adv.id}}},
+                            {$set:{"advertisements.$.Description":adv.description}}
+                        )
+                        .exec()
+                    }
+                    catch(err){
+                        res.sendStatus(500)
+                    }
                 }
-                if(ad.redirectLink){
-                    
+                if(adv.redirectLink){
+                    try{
+                        await ad.findOneAndUpdate(
+                            {publicName:adv.client , advertisements:{$elemMatch:{_id:adv.id}}},
+                            {$set:{"advertisements.$.redirectLink":adv.redirectLink}}
+                        )
+                        .exec()
+                    }
+                    catch(err){
+                        res.sendStatus(500)
+                    }
                 }
-                if(req.file.path){
-                    
-                }
-            }
-            /* var result=null;
-            if(req.body.advertType=="Video"){
-                result =  await cloudinary.uploader.upload(req.file.path ,{resource_type: "video", eager_async: true,folder: 'Ads_Media/Videos',unique_filename: true});
-            }
-            else{
-                result =  await cloudinary.uploader.upload(req.file.path,{folder: 'Ads_Media/Images',unique_filename: true});
+                res.send('Updated successfully')
+                
             }
 
-            ad.updateOne(
-                {publicName:req.body.client},
-                {$push: {advertisements:[{
-                    starting: req.body.startDate,
-                    validTill: req.body.endDate,
-                    type:  req.body.advertType,
-                    package: req.body.adpackage,
-                    Description : req.body.description,
-                    Media : result.secure_url,
-                    redirectLink : req.body.redirectLink
-                }]
-            }},
-            function(err,result){
-                if(err){
-                    res.send(err);
-                }
-                else{
-                    res.send(result);
-                }
-            }
-            ) */
-    }
-    catch(err){
-        res.sendStatus(500)
-    }
+
 })
 
 //post new ad for a existing client

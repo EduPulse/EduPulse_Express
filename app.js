@@ -41,6 +41,10 @@ app.use('/openid', openIDRouter);
 var APIRouter = require('./routes/API');
 app.use('/api', APIRouter);
 
+//api
+/* var APIRouter = require('./routes/API');
+app.use('/api', APIRouter); */
+
 // route handlers
 var indexRouter = require('./routes/index');
 var regRouter = require('./routes/reg');
@@ -49,6 +53,8 @@ var postsRouter = require('./routes/posts');
 var accReportsRouter = require('./routes/acc_reports');
 var newadRouter = require('./routes/ads');
 var manageModeratorRouter = require('./routes/Moderator');
+var chartsRouter = require('./routes/charts');
+var logsRouter = require('./routes/logs');
 
 const viewArticleRouter = require('./routes/nonRegisteredUser/view_article');
 const postCommentRouter = require('./routes/registeredUser/post_comment');
@@ -81,6 +87,8 @@ app.use('/posts', postsRouter);
 app.use('/accreports',accReportsRouter);
 app.use('/ad',newadRouter);
 app.use('/Moderators',manageModeratorRouter);
+app.use('/charts',chartsRouter);
+app.use('/savelog',logsRouter);
 
 app.use('/view_article',viewArticleRouter);
 app.use('/post_comment',postCommentRouter);

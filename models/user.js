@@ -50,6 +50,9 @@ const userSchema = new Schema({
         ref: 'Institute',
         required: false
     },
+    accountStatus: {
+        type: String,
+    },
     academic: new Schema ({
         state: {
             type: String,
