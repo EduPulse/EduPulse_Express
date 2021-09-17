@@ -45,6 +45,22 @@ router.post('/get_all_publication', function (req, res, next) {
     }
 });
 
+router.post('/get_post', function (req, res, next) {
+    try {
+        let postId = req.body._id.toString();
+
+        Post.find({_id: postId }).exec(function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+});
+
 router.post('/get_all_tags', function (req, res, next) {
     try {
         let userID = req.body.user_id.toString();
@@ -220,6 +236,26 @@ router.post('/get_university', function (req, res, next) {
                 res.sendStatus(500);
             }
             res.json(result);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+})
+
+router.post('/get_notifications', function (req, res, next) {
+    
+    let userData = req.body;
+    let userID = userData._id.toString();
+
+    console.log(userData);
+    
+    try {
+        User.findOne({_id: userID}).exec(function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result.notifications);
         })
     } catch (error) {
         res.sendStatus(500)
