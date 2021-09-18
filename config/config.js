@@ -25,12 +25,12 @@ module.exports = Object.freeze ({
             secure: true
         }
     },
-    applicationRoot: 'http://localhost:9000',
-    webRoot: 'http://localhost:3000',
+    applicationRoot: process.env.APPLICATION_ROOT,
+    webRoot: process.env.WEB_ROOT,
     sessionSecret: process.env.SESSION_SECRET,
 
     // **** Dummy user info for authentication bypass ****
-    USEDUMMYUSER: true, // In production this should be **FALSE**
+    USEDUMMYUSER: (process.env.USE_DUMMY_USER && process.env.USE_DUMMY_USER == 'true') ? true : false, // In production this should be **FALSE**
     DUMMYUSER: {
         profilePicture: "https://www.discordavatars.com/wp-content/uploads/2020/05/454302316162580490.jpg",
         role: "moderator",
