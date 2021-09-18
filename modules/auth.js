@@ -82,30 +82,30 @@ function createNewUser(email, name, profilePicture) {
 };
 
 function assertAuthenticated(req, res, next) {
-    
 	// USE DUMMY USER ????
-	if(config.USEDUMMYUSER) {
-		console.log('\x1b[31m', 'USING DUMMY USER FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED', '\x1b[0m');
-        req.user = config.DUMMYUSER;
+	if(config.USE_DUMMY_PROFILE) {
+		console.log('\x1b[31m', `USING DUMMY PROFILE ${config.USE_DUMMY_PROFILE} FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED`, '\x1b[0m');
+        req.user = config[config.USE_DUMMY_PROFILE];
 		next();
-	}
-
-    if(req && req.isAuthenticated()) {
-        next();
-    } else {
-        res.sendStatus(403);
+	} else {
+        if(req && req.isAuthenticated()) {
+            next();
+        } else {
+            res.sendStatus(403);
+        }
     }
+  
 };
 
 function assertRole(roles, req, res, next) {
 
     // USE DUMMY USER ????
-	if(config.USEDUMMYUSER) {
-		console.log('\x1b[31m', 'USING DUMMY USER FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED', '\x1b[0m');
-        req.user = config.DUMMYUSER;
+	if(config.USE_DUMMY_PROFILE) {
+		console.log('\x1b[31m', `USING DUMMY PROFILE ${config.USE_DUMMY_PROFILE} FOR AUTHENTICATON --- IN PRODUCTION THIS SHOULD BE REMOVED`, '\x1b[0m');
+        req.user = config[config.USE_DUMMY_PROFILE];
 	}
 
-    if(req && (config.USEDUMMYUSER || req.isAuthenticated()) && req.user && (roles.indexOf(req.user.role) > -1)) {
+    if(req && (config.USE_DUMMY_PROFILE || req.isAuthenticated()) && req.user && (roles.indexOf(req.user.role) > -1)) {
         next();
     } else {
         res.sendStatus(403);

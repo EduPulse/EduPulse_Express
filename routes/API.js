@@ -49,12 +49,7 @@ router.use('/pin_post',pinPost);
 router.use('/get_top_authors',getTopAuthors);
 router.use('/home_function',homeFunction);
 
-
-module.exports = router;
-
 // admin
-/*
-var authRouter = require('./auth');
 var regRouter = require('./reg');
 var usersRouter = require('./users');
 var postsRouter = require('./posts');
@@ -64,7 +59,6 @@ var manageModeratorRouter = require('./Moderator');
 var chartsRouter = require('./charts');
 var logsRouter = require('./logs');
 
-router.use('/auth', authRouter);
 router.use('/reg', regRouter);
 router.use('/users', usersRouter);
 router.use('/posts', postsRouter);
@@ -74,7 +68,6 @@ router.use('/Moderators',manageModeratorRouter);
 router.use('/charts',chartsRouter);
 router.use('/savelog',logsRouter);
 
+module.exports = router;
 
 
-
-module.exports = router; */
