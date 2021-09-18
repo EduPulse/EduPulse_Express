@@ -39,18 +39,9 @@ app.use('/openid', openIDRouter);
 var APIRouter = require('./routes/API');
 app.use('/api', APIRouter);
 
-// ****** MOVE TO API.js route handlers
+
 var indexRouter = require('./routes/index');
 app.use('/', indexRouter);
-
-var updateProfile = require('./routes/update_profile');
-var loggedInUser = require('./routes/loggedIn_User');
-var authorProfile = require('./routes/get_authorProfile');
-
-app.use('/update_profile', updateProfile);
-app.use('/loggedIn_User', loggedInUser);
-app.use('/get_authorProfile', authorProfile);
-// ****************************
 
 /* app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));

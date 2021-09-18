@@ -31,7 +31,14 @@ const getTopAuthors=require('./nonRegisteredUser/get_top_authors')
 const pinPost=require('./registeredUser/pin_post');
 const homeFunction=require('./nonRegisteredUser/home_function');
 const publishMedia=require('./academicUser/publish_media');
+var updateProfile = require('./update_profile');
+var loggedInUser = require('./loggedIn_User');
+var authorProfile = require('./get_authorProfile');
 
+
+router.use('/update_profile', updateProfile);
+router.use('/loggedIn_User', loggedInUser);
+router.use('/get_authorProfile', authorProfile);
 router.use('/view_article',viewArticleRoute);
 router.use('/post_comment',postCommentRoute);
 router.use('/get_user_data',getUserData);
