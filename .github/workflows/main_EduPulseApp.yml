@@ -62,4 +62,4 @@ jobs:
         app-name: 'EduPulseApp'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_26f29398ecc844049267cdf1342473b0 }}
-        package: node_build
+        package: node_build/
