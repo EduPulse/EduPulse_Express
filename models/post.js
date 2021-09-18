@@ -85,7 +85,7 @@ const articleSchema = new Schema({
             'removed'
         ],
         required: true,
-        default: "hidden"
+        default: "published"
     },
     license: {
         type: String,

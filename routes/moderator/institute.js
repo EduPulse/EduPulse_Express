@@ -1,19 +1,24 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Institute = require('../models/institute')
+const Institute = require('../../models/institute')
+const User = require('../../models/user')
+const auth = require('../../modules/auth')
 
 var router = express.Router();
 
-router.get('', function (req, res) {
+router.get('', auth.assertModerator, function (req, res) {
 
     async function getUserInstitute() {
-        return new mongoose.Types.ObjectId("610f93e15196bb08091cab69");
+        let user = await User.findOne({ _id: req.user._id }, 'academicInstitute');
+        if(user && user.academicInstitute) {
+            return user.academicInstitute;
+        } else {
+            return null;
+        }
     }
 
     (async () => {
         res.status(500);
-
-        // let institute = await Institute.findOne({_id: await getUserInstitute()});
 
         let institute = await Institute.aggregate([
             { $match: { _id: await getUserInstitute() } },
@@ -67,10 +72,15 @@ router.get('', function (req, res) {
     })
 });
 
-router.put('', function(req, res) {
+router.put('', auth.assertModerator, function(req, res) {
 
     async function getUserInstitute() {
-        return new mongoose.Types.ObjectId("610f93e15196bb08091cab69");
+        let user = await User.findOne({ _id: req.user._id }, 'academicInstitute');
+        if(user && user.academicInstitute) {
+            return user.academicInstitute;
+        } else {
+            return null;
+        }
     }
 
     (async () => {
@@ -78,9 +88,7 @@ router.put('', function(req, res) {
 
         res.status(500);
 
-        // let institute = await Institute.findOne({_id: await getUserInstitute()});
-
-        let result = await Institute.updateOne({ _id: data._id }, {
+        let result = await Institute.updateOne({ _id: await getUserInstitute() }, {
                 name: data.name,
                 domain: data.domain,
                 description: data.description,

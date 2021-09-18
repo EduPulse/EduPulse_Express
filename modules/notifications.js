@@ -1,5 +1,4 @@
-// uncomment below line after merge
-// const config = require('../config/config');
+const config = require('../config/config');
 const User = require('../models/user');
 const { info } = require('../modules/log');
 
