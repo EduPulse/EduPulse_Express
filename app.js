@@ -47,32 +47,11 @@ app.use('/api', APIRouter); */
 
 // route handlers
 var indexRouter = require('./routes/index');
-var regRouter = require('./routes/reg');
-var usersRouter = require('./routes/users');
-var postsRouter = require('./routes/posts');
-var accReportsRouter = require('./routes/acc_reports');
-var newadRouter = require('./routes/ads');
-var manageModeratorRouter = require('./routes/Moderator');
-var chartsRouter = require('./routes/charts');
-var logsRouter = require('./routes/logs');
-
-
+app.use('/', indexRouter);
 
 var updateProfile = require('./routes/update_profile');
 var loggedInUser = require('./routes/loggedIn_User');
 var authorProfile = require('./routes/get_authorProfile');
-
-app.use('/', indexRouter);
-app.use('/reg', regRouter);
-app.use('/users', usersRouter);
-app.use('/posts', postsRouter);
-app.use('/accreports',accReportsRouter);
-app.use('/ad',newadRouter);
-app.use('/Moderators',manageModeratorRouter);
-app.use('/charts',chartsRouter);
-app.use('/savelog',logsRouter);
-
-
 
 app.use('/update_profile', updateProfile);
 app.use('/loggedIn_User', loggedInUser);

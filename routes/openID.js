@@ -17,7 +17,7 @@ router.get('/google/finish',
         failureRedirect: config.webRoot + '?error=Failed to sign in'
     }), 
     function(req, res, next) {
-        userLogin(req.user._id);
+        userLogin(req.user.role +' '+ req.user._id);
         res.redirect(config.webRoot + '?signin=true');
     }
 );
@@ -43,7 +43,7 @@ router.post('/azure/finish',
         })(req, res, next);
     },
     function(req, res, next) {
-        userLogin(req.user._id);
+        userLogin(req.user.role +' '+ req.user._id);
         res.redirect(config.webRoot + '?signin=true');
     }
 );
@@ -51,7 +51,7 @@ router.post('/azure/finish',
 router.get('/logout', 
     auth.assertAuthenticated,
     function (req, res, next) {
-        userLogout(req.user._id);
+        userLogout(req.user.role +' '+ req.user._id);
         req.logout();
         res.redirect(config.webRoot + '?signout=true');
     }
