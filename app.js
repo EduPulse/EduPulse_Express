@@ -52,8 +52,8 @@ app.use('/loggedIn_User', loggedInUser);
 app.use('/get_authorProfile', authorProfile);
 // ****************************
 
-app.get('/*', function (req, res) {
+/* app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+}); */
 
 module.exports = app;
