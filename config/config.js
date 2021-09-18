@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-module.exports = Object.freeze ({
+module.exports = Object.freeze({
     version: '0.8',
     clients: {
         google: {
@@ -31,11 +31,19 @@ module.exports = Object.freeze ({
 
     // **** Dummy user info for authentication bypass ****
     USEDUMMYUSER: (process.env.USE_DUMMY_USER && process.env.USE_DUMMY_USER == 'true') ? true : false, // In production this should be **FALSE**
+    // DUMMYUSER: {
+        //     profilePicture: "https://www.discordavatars.com/wp-content/uploads/2020/05/454302316162580490.jpg",
+        //     role: "moderator",
+        //     _id: "60ecfe51395a1704a42d8cae",
+        //     name: "Chalaka Kumarasinghe",
+        //     personalEmail: "sachinthakac@gmail.com"
+        // },
+
     DUMMYUSER: {
-        profilePicture: "https://www.discordavatars.com/wp-content/uploads/2020/05/454302316162580490.jpg",
-        role: "moderator",
-        _id: "60ecfe51395a1704a42d8cae",
-        name: "Chalaka Kumarasinghe",
-        personalEmail: "sachinthakac@gmail.com"
-    }
+        "name": "Heshan jayasuriya",
+        "personalEmail": "team.binary.bits@gmail.com",
+        "role": "academic",
+        "profilePicture": "http://waynehartzler.net/wp-content/uploads/2014/12/Graduation.jpg",
+        "_id": "60ed8d6597a4670ca060ed6b"
+    },
 });
