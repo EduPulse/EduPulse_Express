@@ -69,6 +69,23 @@ router.post('/republish_post', function (req, res, next) {
     }
 });
 
+router.post('/change_post_visibility', function (req, res, next) {
+    try {
+        let postID = req.body.post_id.toString();
+        let newVisibility = req.body.new_visibility.toString();
+
+        Post.findOneAndUpdate({_id: postID}, {visibility: newVisibility}).exec(function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+});
+
 
 router.post('/list_followers', function (req, res, next) {
     try {
@@ -91,6 +108,22 @@ router.post('/list_following_users', function (req, res, next) {
         let userID = req.body.user_id.toString();
 
         User.find({"followedBy": userID}).select(['-comments', '-collections', '-searchHistory', '-reports', '-posts']).populate().exec(function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+});
+
+router.post('/list_versioned_posts', function (req, res, next) {
+    try {
+        let userID = req.body.user_id.toString();
+
+        Post.find({$and: [{author: {$ne: userID}}, {"article.status": "published"}, {"article.versions.contributor": userID}]}).select(['-comments', '-collections', '-searchHistory', '-reports']).populate().exec(function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);

@@ -4,10 +4,29 @@ const {convert} = require("html-to-text");
 const readingTime = require("reading-time");
 const filter = require("leo-profanity");
 const User = require("../../models/user");
+const upload = require("../../modules/multer");
+const cloudinary = require("../../modules/cloudinary");
+const {sendNotification} = require("../../modules/notifications");
 
 var router = express.Router();
 
-// TODO [not sure] add other information of the author
+const makeNotificationForPost = (postID, userID) => {
+    // get all fallowing users
+    User.findOne({_id: userID}).select(["followedBy", "name"]).exec(function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+        let descriptionObject = {
+            post_id: postID,
+            user_or_author_id: userID,
+            message: result.name + " published a new article.",
+        }
+        console.log(descriptionObject);
+        sendNotification(result.followedBy, "publication", JSON.stringify(descriptionObject))
+    })
+}
+
+
 router.post('/', function (req, res, next) {
     let authorID = req.body.author_ID;
     // get author university
@@ -22,7 +41,7 @@ router.post('/', function (req, res, next) {
                 visibility: "Anyone",
                 author: authorID,
                 academicInstitute: result[0].academicInstitute,
-                "article.status": "unpublished",
+                "article.status": "hidden",
             }, (function (err, resultCreate) {
                 if (err) {
                     console.error(err);
@@ -33,6 +52,7 @@ router.post('/', function (req, res, next) {
         });
 
     } catch (error) {
+        console.log(error)
         res.sendStatus(500)
     }
 });
@@ -47,19 +67,15 @@ router.post('/real_time_content_save', function (req, res) {
     // bad word detection
     if (!filter.check(postTitle + " " + contentPlainText)) {
         try {
-            Post.updateOne({_id: postID}, {
-                article: {
-                    current: {
-                        content: postContent,
-                        title: postTitle
-                    }
-                }
+            Post.findOneAndUpdate({_id: postID}, {
+                "article.current.content": postContent,
+                "article.current.title": postTitle
             }).exec((function (err, result) {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
                 }
-                res.json(result);
+                res.json({bad_word: false});
             }));
         } catch (error) {
             res.sendStatus(500)
@@ -80,7 +96,7 @@ router.post('/publish_post', function (req, res) {
     let title = req.body.post_title;
     let coverImageLink = req.body.cover_image;
     let contributor = req.body.contributor;
-
+    let institute = req.body.institute;
     const contentPlainText = convert(content, {wordwrap: 130});
 
     // Read time prediction
@@ -101,8 +117,8 @@ router.post('/publish_post', function (req, res) {
             // save into article.current
             // save extra data
             let mainQuery;
-            if (licence === "")
-                mainQuery = {article: {current: updateQueryPost, status: "published"}, visibility: visibilityValue};
+            if (institute === "")
+                mainQuery = {"article.status": "published", visibility: visibilityValue};
             else
                 mainQuery = {
                     article: {
@@ -111,16 +127,19 @@ router.post('/publish_post', function (req, res) {
                         license: licence,
                     },
                     visibility: visibilityValue,
+                    academicInstitute: institute
                 };
 
-            Post.updateOne({_id: postID}, mainQuery).exec((function (err, result) {
+            console.log(mainQuery)
+            Post.findOneAndUpdate({_id: postID}, mainQuery).exec((function (err, result) {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
                 }
+                // calling notification making function
+                makeNotificationForPost(postID, contributor)
                 res.json(result);
             }));
-
         } catch (error) {
             res.sendStatus(500)
         }
@@ -159,13 +178,13 @@ router.post('/publish_post_version', function (req, res) {
                     }
                 }
             };
-            Post.updateOne({_id: postID}, queryPush).exec((function (err, result) {
+            Post.findOneAndUpdate({_id: postID}, queryPush).exec((function (err, result) {
                 if (err) {
                     console.error(err);
                     res.sendStatus(500);
                 }
-                console.log("done", queryPush)
                 res.json(result);
+
             }));
 
         } catch (error) {
@@ -179,7 +198,7 @@ router.post('/publish_post_version', function (req, res) {
 router.post('/make_state_unpublished', function (req, res) {
     let postID = req.body.post_ID;
     try {
-        Post.updateOne({_id: postID}, {"article.status": "unpublished"}).exec((function (err, result) {
+        Post.updateOne({_id: postID}, {"article.status": "hidden"}).exec((function (err, result) {
             if (err) {
                 console.error(err);
                 res.sendStatus(500);
@@ -190,5 +209,20 @@ router.post('/make_state_unpublished', function (req, res) {
         res.sendStatus(500)
     }
 });
+
+// upload media for post
+router.post('/upload_media_for_article', upload.single("media"), async function (req, res) {
+    try {
+        console.log(req.body);
+        //res.json(result);
+        let result = await cloudinary.uploader.upload(req.file.path, {
+            folder: 'Article_Media/Images',
+            unique_filename: true
+        });
+        res.json(result);
+    } catch (error) {
+        res.sendStatus(500)
+    }
+})
 
 module.exports = router;
