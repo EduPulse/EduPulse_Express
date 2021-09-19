@@ -44,16 +44,20 @@ const reportSchema = new Schema({
     }, 
     against: new Schema ({
         user: {
-            type: Schema.Types.ObjectId,ref: 'User'
+            type: Schema.Types.ObjectId,
+            ref: 'User'
         }, 
         userInstitute: {
-            type: Schema.Types.ObjectId,ref: 'Institute'
+            type: Schema.Types.ObjectId,
+            ref: 'Institute'
         }, 
         post: {
-            type: Schema.Types.ObjectId,ref: 'Post'
+            type: Schema.Types.ObjectId,
+            ref: 'Post'
         }, 
         comment: {
             type: Schema.Types.ObjectId,
+            ref: 'Comment'
         }
     }),
     comment: {

@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
-module.exports = Object.freeze ({
+module.exports = Object.freeze({
     version: '0.8',
     clients: {
         google: {
@@ -25,6 +25,31 @@ module.exports = Object.freeze ({
             secure: true
         }
     },
-    applicationRoot: 'http://localhost:9000',
-    sessionSecret: process.env.SESSION_SECRET
+    applicationRoot: process.env.APPLICATION_ROOT,
+    webRoot: process.env.WEB_ROOT,
+    sessionSecret: process.env.SESSION_SECRET,
+
+    // **** Dummy user info for authentication bypass ****
+    USE_DUMMY_PROFILE: process.env.DUMMY_PROFILE, // In production this should be **UNDEFINED**
+    DUMMY_PROFILE_MOD: {
+        profilePicture: "https://www.discordavatars.com/wp-content/uploads/2020/05/454302316162580490.jpg",
+        role: "moderator",
+        _id: "60ecfe51395a1704a42d8cae",
+        name: "Chalaka Kumarasinghe",
+        personalEmail: "sachinthakac@gmail.com"
+    },
+    DUMMY_PROFILE_ACA: {
+        "name": "Heshan jayasuriya",
+        "personalEmail": "team.binary.bits@gmail.com",
+        "role": "academic",
+        "profilePicture": "http://waynehartzler.net/wp-content/uploads/2014/12/Graduation.jpg",
+        "_id": "60ed8d6597a4670ca060ed6b"
+    },
+    DUMMY_PROFILE_ADMIN: {
+        "name":"EduPulse Admin",
+        "personalEmail":"edupulse27@gmail.com",
+        "role":"admin",
+        "profilePicture":"https://lh3.googleusercontent.com/a-/AOh14Gj-Pmjhaga31myDqS33zBZqUpo5Y3xPf5Tmzvc=s96-c",
+        "_id":"60ed4643afb6661fb026db37"
+    },
 });

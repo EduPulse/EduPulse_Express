@@ -85,7 +85,7 @@ const articleSchema = new Schema({
             'removed'
         ],
         required: true,
-        default: "visible"
+        default: "published"
     },
     license: {
         type: String,
@@ -170,7 +170,7 @@ const postSchema = new Schema({
         default: "Anyone",
         enum: [
             'Anyone',
-            'Academic Only'
+            'Academics Only'
         ]
     },
     article: articleSchema,

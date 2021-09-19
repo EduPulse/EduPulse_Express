@@ -1,8 +1,32 @@
 const express = require('express');
 const Post = require('../../models/post');
 const Comment = require('../../models/comment');
+const User = require("../../models/user");
+const {sendNotification} = require("../../modules/notifications");
 var router = express.Router();
 
+const makeNotificationVoteComment = (postID,commentID,reactedUserID) => {
+    User.findOne({_id: reactedUserID}).select(["name"]).exec(function (err, result) {
+        if (err) {
+            console.error(err);
+        }
+
+        Comment.findOne({_id:commentID}).select(["commenter"]).exec(function (err, resultCommenter) {
+            if (err) {
+                console.error(err);
+            }
+            let commenter=resultCommenter.commenter;
+
+            let descriptionObject={
+                post_id:postID,
+                user_or_author_id:reactedUserID,
+                message:result.name+" reacted to your comment.",
+            }
+
+            sendNotification(commenter,"reaction",JSON.stringify(descriptionObject))
+        })
+    })
+}
 
 router.post('/', function (req, res, next) {
     try {
@@ -37,6 +61,8 @@ router.post('/', function (req, res, next) {
                     res.sendStatus(500);
                 }
                 res.json(posts);
+                // send notification
+                makeNotificationVoteComment(postID,commentID,userID)
             });
         });
     } catch (error) {
