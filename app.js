@@ -39,12 +39,8 @@ app.use('/openid', openIDRouter);
 var APIRouter = require('./routes/API');
 app.use('/api', APIRouter);
 
-
-var indexRouter = require('./routes/index');
-app.use('/', indexRouter);
-
-/* app.get('/*', function (req, res) {
+app.get('/*', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
-}); */
+});
 
 module.exports = app;
