@@ -3,6 +3,7 @@ dotenv.config();
 
 module.exports = Object.freeze({
     version: '0.8',
+    environment: process.env.NODE_ENV,
     clients: {
         google: {
             id: process.env.GOOGLE_CLIENT_ID,
@@ -30,7 +31,7 @@ module.exports = Object.freeze({
     sessionSecret: process.env.SESSION_SECRET,
 
     // **** Dummy user info for authentication bypass ****
-    USE_DUMMY_PROFILE: process.env.DUMMY_PROFILE, // In production this should be **UNDEFINED**
+    USE_DUMMY_PROFILE: (process.env.NODE_ENV === 'production') ? null : process.env.DUMMY_PROFILE, // In production this should be **NULL**
     DUMMY_PROFILE_MOD: {
         profilePicture: "https://www.discordavatars.com/wp-content/uploads/2020/05/454302316162580490.jpg",
         role: "moderator",

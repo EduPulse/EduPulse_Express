@@ -14,7 +14,7 @@ const makeNotificationComment = (postID,commentedUserID) => {
             console.error(err);
         }
 
-        Post.findOne({_id:postID}).select(["article.versions"]).exec(function (err, resultAuthors) {
+        Post.findOne({_id:postID}).select(["article.versions","article.current.title"]).exec(function (err, resultAuthors) {
             if (err) {
                 console.error(err);
             }
@@ -25,8 +25,10 @@ const makeNotificationComment = (postID,commentedUserID) => {
                 post_id:postID,
                 user_or_author_id:commentedUserID,
                 message:result.name+" commented on your(contributed) publication.",
+                post_title:resultAuthors.article.current.title,
+                timestamp:new Date().toString()
             }
-
+            console.log(descriptionObject);
             sendNotification(contactList,"reaction",JSON.stringify(descriptionObject))
         })
     })
