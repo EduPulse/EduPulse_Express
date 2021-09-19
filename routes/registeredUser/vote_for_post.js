@@ -11,7 +11,7 @@ const makeNotificationVote = (postID,reactedUserID) => {
             console.error(err);
         }
 
-        Post.findOne({_id:postID}).select(["article.versions"]).exec(function (err, resultAuthors) {
+        Post.findOne({_id:postID}).select(["article.versions","article.current.title"]).exec(function (err, resultAuthors) {
             if (err) {
                 console.error(err);
             }
@@ -22,6 +22,8 @@ const makeNotificationVote = (postID,reactedUserID) => {
                 post_id:postID,
                 user_or_author_id:reactedUserID,
                 message:result.name+" reacted to your(contributed) publication.",
+                post_title:resultAuthors.article.current.title,
+                timestamp:new Date().toString()
             }
 
             sendNotification(contactList,"reaction",JSON.stringify(descriptionObject))

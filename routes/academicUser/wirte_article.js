@@ -10,7 +10,7 @@ const {sendNotification} = require("../../modules/notifications");
 
 var router = express.Router();
 
-const makeNotificationForPost = (postID, userID) => {
+const makeNotificationForPost = (postID, userID,title) => {
     // get all fallowing users
     User.findOne({_id: userID}).select(["followedBy", "name"]).exec(function (err, result) {
         if (err) {
@@ -20,6 +20,8 @@ const makeNotificationForPost = (postID, userID) => {
             post_id: postID,
             user_or_author_id: userID,
             message: result.name + " published a new article.",
+            post_title:title,
+            timestamp:new Date().toString()
         }
         console.log(descriptionObject);
         sendNotification(result.followedBy, "publication", JSON.stringify(descriptionObject))
@@ -137,7 +139,7 @@ router.post('/publish_post', function (req, res) {
                     res.sendStatus(500);
                 }
                 // calling notification making function
-                makeNotificationForPost(postID, contributor)
+                makeNotificationForPost(postID, contributor,title)
                 res.json(result);
             }));
         } catch (error) {
