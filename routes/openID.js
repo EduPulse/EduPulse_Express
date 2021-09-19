@@ -7,6 +7,13 @@ const { userLogin, userLogout } = require('../modules/log');
 const router = Router();
 
 router.get('/google', 
+    (req, res, next) => {
+        if(req.user) {
+            res.redirect(config.webRoot + '?signin=true');
+        } else {
+            return next();
+        }
+    },
     passport.authenticate('google', {
         failureRedirect: config.webRoot + '?error=Failed to sign in'
     })
@@ -23,6 +30,13 @@ router.get('/google/finish',
 );
 
 router.get('/azure', 
+    (req, res, next) => {
+        if(req.user) {
+            res.redirect(config.webRoot + '?signin=true');
+        } else {
+            return next();
+        }
+    },
     function(req, res, next) {
         passport.authenticate('azuread-openidconnect', {
             response: res,
