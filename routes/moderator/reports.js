@@ -42,11 +42,11 @@ router.get('/', auth.assertModerator, function (req, res, next) {
         .exec();
 
         reports = await Post.populate(reports, [
-            {path: '_id.post', select: ['author', 'article.status', 'article.license', 'article.current', 'pin', 'createdAt']}
+            {path: '_id.post', select: ['author', 'article.status', 'article.license', 'article.current', 'pin', 'createdAt', 'article.visibility']}
         ]);
 
         reports = await Comment.populate(reports, [
-            {path: '_id.comment', select: ['commenter', 'content', 'createdAt']}
+            {path: '_id.comment', select: ['commenter', 'content', 'createdAt', 'status']}
         ]);
 
         reports = await User.populate(reports, [
@@ -72,6 +72,8 @@ router.get('/', auth.assertModerator, function (req, res, next) {
             });
             return x;
         });
+
+        reports = reports.filter((rep) => (rep._id.post && rep._id.post.article.status !== 'removed') || (rep._id.comment && rep._id.comment.status !== 'removed'));
 
         res.json(reports);
 
