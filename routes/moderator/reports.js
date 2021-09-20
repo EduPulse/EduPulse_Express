@@ -235,6 +235,7 @@ router.put('/', auth.assertModerator, (req, res, next) => {
             if(json.comment !== undefined) update.comment = json.comment;
             if(json.status !== undefined) update.status = json.status;
 
+            let reportUpdateResult;
             if(json.content && json.content.remove && json.content.type === "post") {
                 let result = await Post.updateOne({ _id: json.content._id }, {'article.status': 'removed'}, { runValidators: true }).session(session);
                 if(result.nModified > 0) {
@@ -243,6 +244,7 @@ router.put('/', auth.assertModerator, (req, res, next) => {
                     res.status(404);
                     throw APIError('Post not found', null);
                 }
+                reportUpdateResult = await Report.updateMany({ 'against.post': json.content._id }, update, { runValidators: true }).session(session);
             } else if(json.content && json.content.remove && json.content.type === "comment") {
                 let result = await Comment.updateOne({ _id: json.content._id }, {status: 'removed'}, { runValidators: true }).session(session);
                 if(result.nModified > 0) {
@@ -251,11 +253,12 @@ router.put('/', auth.assertModerator, (req, res, next) => {
                     res.status(404);
                     throw APIError('Comment not found', null);
                 }
+                reportUpdateResult = await Report.updateMany({ 'against.comment': json.content._id }, update, { runValidators: true }).session(session);
+            } else {
+                reportUpdateResult = await Report.updateMany({ _id: { $in: json._ids } }, update, { runValidators: true }).session(session);
             }
 
-            const result = await Report.updateMany({ _id: { $in: json._ids } }, update, { runValidators: true }).session(session);
-
-            if(result.nModified > 0) {
+            if(reportUpdateResult.nModified > 0) {
                 info(
                     `Reports: ${json._ids.toString()} updated with`
                     + `${((json.status !== undefined) ? ' status: ' + json.status + ';': '')}`
