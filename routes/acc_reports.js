@@ -1,12 +1,12 @@
 const express = require('express');
 const feed = require('../modules/feed');
 const Post = require('../models/post');
-
+const auth = require('../modules/auth')
 const report = require('../models/report');
 const user = require('../models/user');
 var router = express.Router();
 
-router.get('/', async  function (req, resp, next) {
+router.get('/',auth.assertAdmin, async  function (req, resp, next) {
     /* report.find({type:"User"})
     .populate({path:'against.user',select:['name','role']})
     .populate({path:'reportedBy',select:'name'})
@@ -34,7 +34,7 @@ router.get('/', async  function (req, resp, next) {
     resp.send(res);
 });
 
-router.post('/get',   function (req, res) {
+router.post('/get',auth.assertAdmin, function (req, res) {
     console.log(req.body)
     user.findById(req.body.data)
     .populate({path:'reports',populate: {path: 'reportedBy',select:'name' }})
@@ -48,7 +48,7 @@ router.post('/get',   function (req, res) {
     })
 });
 
-router.post('/manageReports',   function (req, res) {
+router.post('/manageReports',auth.assertAdmin,function (req, res) {
     console.log(req.body)
     if(req.body.type==="reInstate"){
         user.findByIdAndUpdate(req.body.data,{accountStatus:'active'},function(err, reports) {

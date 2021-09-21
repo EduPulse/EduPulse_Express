@@ -2,8 +2,9 @@ const express = require('express');
 var router = express.Router();
 const user = require('../models/user');
 const log = require('../models/log');
+const auth = require('../modules/auth')
 
-router.get('/totalusers',async function(req,res){
+router.get('/totalusers',auth.assertAdmin,async function(req,res){
     try{
         var userCount = {academic:0,general:0};
         await user.countDocuments({role:"academic"},
@@ -29,7 +30,7 @@ router.get('/totalusers',async function(req,res){
     
 })
 
-router.get('/userRegistrations',async (req,resp)=>{
+router.get('/userRegistrations',auth.assertAdmin,async (req,resp)=>{
     try{
         var dt = new Date();
         dt.setDate(dt.getDate()-8);
@@ -53,7 +54,7 @@ router.get('/userRegistrations',async (req,resp)=>{
     }
 })
 
-router.get('/userLogins',async (req,resp)=>{
+router.get('/userLogins',auth.assertAdmin,async (req,resp)=>{
     try{
         var dt = new Date();
         dt.setDate(dt.getDate()-8);
@@ -95,7 +96,7 @@ router.get('/userLogins',async (req,resp)=>{
     }
 })
 
-router.get('/liveUsers',async (req,resp)=>{
+router.get('/liveUsers',auth.assertAdmin,async (req,resp)=>{
     try{
         var dt = new Date();
         dt.setDate(dt.getDate()-8);

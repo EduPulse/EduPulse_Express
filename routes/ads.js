@@ -3,9 +3,10 @@ var router = express.Router();
 const ad = require('../models/advertiser')
 const upload = require('../modules/multer')
 const cloudinary= require('../modules/cloudinary')
+const auth = require('../modules/auth')
 
 //get advertisments
-router.get('/',function(req,res){
+router.get('/',auth.assertAdmin,function(req,res){
     try{
         ad.find()
         .exec(function(err, reports) {
@@ -22,7 +23,7 @@ router.get('/',function(req,res){
 })
 
 //post new advertisment
-router.post('/new',upload.single("media"),async function(req,res){
+router.post('/new',auth.assertAdmin,upload.single("media"),async function(req,res){
     try {
             console.log(req.body);
             //res.json(result);
@@ -60,7 +61,7 @@ router.post('/new',upload.single("media"),async function(req,res){
 })
 
 //get advertisments for update
-router.post('/getAD',function(req,res){
+router.post('/getAD',auth.assertAdmin,function(req,res){
     try{
         console.log(req.body.data)
         ad.findOne({publicName:req.body.data.Client} , {advertisements:{$elemMatch:{_id:req.body.data.adID}}})
@@ -79,7 +80,7 @@ router.post('/getAD',function(req,res){
 })
 
 //update ad
-router.put('/updateAD',upload.single("media"),async function(req,res){
+router.put('/updateAD',auth.assertAdmin,upload.single("media"),async function(req,res){
 
             console.log(req.body);
             const adv = req.body;
@@ -173,7 +174,7 @@ router.put('/updateAD',upload.single("media"),async function(req,res){
 })
 
 //post new ad for a existing client
-router.put('/same_client_new',upload.single("media"),async function(req,res){
+router.put('/same_client_new',auth.assertAdmin,upload.single("media"),async function(req,res){
     try{
             console.log(req.body);
             var result=null;
@@ -211,7 +212,7 @@ router.put('/same_client_new',upload.single("media"),async function(req,res){
     }
 })
 
-router.delete('/delete',async function(req,res){
+router.delete('/delete',auth.assertAdmin,async function(req,res){
     try{
         console.log(req.body)
         //ad.findByIdAndDelete(req.body.answer)
