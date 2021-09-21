@@ -8,20 +8,20 @@ const instituteSchema = new Schema({
     }, 
     domain: {
         type: String,
-        required: true
+        required: false
     }, 
     description: {
         type: String,
-        required: true
+        required: false
     }, 
     coverImage: {
         type: String,
-        required: true
+        required: false
     }, 
     contactDetails: new Schema ({
         email: {
             type: String,
-            required: true
+            required: false
         }, 
         phoneNos: [{
             type: String,
@@ -30,19 +30,19 @@ const instituteSchema = new Schema({
         address: new Schema({
             line1: {
                 type: String,
-                required: true
+                required: false
             },
             line2: {
                 type: String,
-                required: true
+                required: false
             },
             city: {
                 type: String,
-                required: true
+                required: false
             },
             country: {
                 type: String,
-                required: true
+                required: false
             },
         })
     })

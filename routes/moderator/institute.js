@@ -4,6 +4,9 @@ const Institute = require('../../models/institute')
 const User = require('../../models/user')
 const auth = require('../../modules/auth')
 
+const upload = require('../../modules/multer')
+const cloudinary= require('../../modules/cloudinary')
+
 var router = express.Router();
 
 router.get('', auth.assertModerator, function (req, res) {
@@ -112,5 +115,31 @@ router.put('', auth.assertModerator, function(req, res) {
         res.send(err);
     })
 });
+
+router.post('/cover', upload.single("cover"), auth.assertModerator, function(req, res) {
+
+    async function getUserInstitute() {
+        let user = await User.findOne({ _id: req.user._id }, 'academicInstitute');
+        if(user && user.academicInstitute) {
+            return user.academicInstitute;
+        } else {
+            return null;
+        }
+    }
+
+    (async () => {
+
+        res.status(500);
+        result =  await cloudinary.uploader.upload(req.file.path, {folder: 'institutes/covers', unique_filename: true});
+
+        res.status(200);
+        res.send({coverUrl: result.secure_url});
+
+    })().catch(error => {
+        console.error(error);
+        res.send(err);
+    })
+});
+
 
 module.exports = router;

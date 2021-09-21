@@ -13,7 +13,7 @@ module.exports = Object.freeze({
             id: process.env.AZURE_CLIENT_ID,
             secret: process.env.AZURE_CLIENT_SECRET,
             identityMetadata: "https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration",
-            issuer: 'https://login.microsoftonline.com/9188040d-6c67-4c5b-b112-36a304b66dad/v2.0',
+            issuer: 'https://login.microsoftonline.com/2bfb8311-4459-4279-b2d7-c46091750410',
             tenent: '2bfb8311-4459-4279-b2d7-c46091750410'
         },
         mongo: {

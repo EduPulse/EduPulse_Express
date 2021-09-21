@@ -11,9 +11,9 @@ const reportSchema = new Schema({
         enum: [
             'post',
             'comment',
-            'user'
+            'User'
         ],
-        required: true
+        required: false
     },
     status: {
         type: String,
@@ -32,7 +32,7 @@ const reportSchema = new Schema({
             'content ownership',
             'other'
         ],
-        required: true
+        required: false
     },
     title: {
         type: String,
