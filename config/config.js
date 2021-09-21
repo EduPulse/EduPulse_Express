@@ -56,7 +56,7 @@ module.exports = Object.freeze({
     DUMMY_PROFILE_GEN: {
         "name":"Devshan Fernando",
         "personalEmail":"devshan98@gmail.com",
-        "role":"none",
+        "role":"general",
         "profilePicture":null,
         "_id":"61480f22ea7908258095a1e0"
     },
