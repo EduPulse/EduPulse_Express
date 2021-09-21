@@ -1,13 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Institute = require('../../models/institute')
-const User = require('../../models/user')
-const auth = require('../../modules/auth')
+const Institute = require('../../models/institute');
+const User = require('../../models/user');
+const auth = require('../../modules/auth');
 
-const upload = require('../../modules/multer')
-const cloudinary= require('../../modules/cloudinary')
+const upload = require('../../modules/multer');
+const cloudinary = require('../../modules/cloudinary');
+
+const instUserRouter = require('./users');
 
 var router = express.Router();
+
+router.use('/users', instUserRouter);
 
 router.get('', auth.assertModerator, function (req, res) {
 
