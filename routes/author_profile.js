@@ -6,7 +6,7 @@ var router = express.Router();
 
 router.post('/report_author', async function (req, res, next) {
     try {
-        console.log("Report req body: ", req.body);
+        console.log("REPORT REQUEST BODY: ", req.body);
         
         const instance = new Report ({
             reportedBy: req.body.reported_by,

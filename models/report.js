@@ -11,7 +11,7 @@ const reportSchema = new Schema({
         enum: [
             'post',
             'comment',
-            'user'
+            'User'
         ],
         required: false
     },
