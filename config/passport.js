@@ -37,8 +37,8 @@ passport.use(new OIDCStrategy({
 	responseMode: 'form_post',
 	allowHttpForRedirectUrl: true,
 	scope: ['profile', 'email', 'openid'],
-// 	validateIssuer: true,
-// 	issuer: config.clients.azure.issuer
+	validateIssuer: true,
+	issuer: config.clients.azure.issuer
 }, function (iss, sub, profile, done) {
 	auth.authenticateUser(profile._json.email).then(user => {
 		if(user !== null) {
