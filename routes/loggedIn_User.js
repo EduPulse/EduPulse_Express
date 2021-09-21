@@ -262,4 +262,21 @@ router.post('/get_notifications', function (req, res, next) {
     }
 })
 
+router.post('/get_collection', function (req, res, next) {
+    let userID = req.body.user_id.toString();
+    console.log("Logged in user COLLECTIONS: ", userID);
+
+    try {
+        User.findOne({_id: userID}).exec(function (err, result) {
+            if (err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            res.json(result.collections);
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+});
+
 module.exports = router;

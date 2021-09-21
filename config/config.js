@@ -27,7 +27,7 @@ module.exports = Object.freeze({
         }
     },
     applicationRoot: process.env.APPLICATION_ROOT,
-    webRoot: process.env.WEB_ROOT,
+    webRoot: (process.env.NODE_ENV === 'production') ? process.env.APPLICATION_ROOT : process.env.WEB_ROOT,
     sessionSecret: process.env.SESSION_SECRET,
 
     // **** Dummy user info for authentication bypass ****

@@ -29,7 +29,7 @@ const makeNotificationComment = (postID,commentedUserID) => {
                 timestamp:new Date().toString()
             }
             console.log(descriptionObject);
-            sendNotification(contactList,"reaction",JSON.stringify(descriptionObject))
+            sendNotification(contactList,"comment",JSON.stringify(descriptionObject))
         })
     })
 }
