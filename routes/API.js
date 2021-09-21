@@ -4,7 +4,9 @@ const router = Router();
 
 // any user
 var notificationRouter = require('./notifications');
+var Signup = require('./nonRegisteredUser/signup');
 router.use('/notifications', notificationRouter);
+router.use('/Signup', Signup);
 
 // moderator only
 var reportsRouter = require('./moderator/reports');
