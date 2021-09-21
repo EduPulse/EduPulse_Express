@@ -2,8 +2,9 @@ const express = require('express');
 var router = express.Router();
 const user = require('../models/user');
 const institute = require('../models/institute');
+const auth = require('../modules/auth')
 
-router.get('/',function(req,res){
+router.get('/',auth.assertAdmin,function(req,res){
     try{
         user.find({role:"moderator"})
         .populate({path:'academicInstitute'})
@@ -20,7 +21,7 @@ router.get('/',function(req,res){
     }
 })
 
-router.post('/new',async(req,res)=>{
+router.post('/new',auth.assertAdmin,async(req,res)=>{
     const uniFacName = req.body.univeristy+','+req.body.faculty
     //console.log(uniFacName)
     try{
@@ -68,7 +69,7 @@ router.post('/new',async(req,res)=>{
     }
 })
 
-router.post('/delete',async(req,res)=>{
+router.post('/delete',auth.assertAdmin,async(req,res)=>{
     try{
         await user.findByIdAndUpdate(req.body.data,{role:"general"})
         .exec(function(err, reports) {
