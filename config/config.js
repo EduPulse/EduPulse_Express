@@ -53,4 +53,11 @@ module.exports = Object.freeze({
         "profilePicture":"https://lh3.googleusercontent.com/a-/AOh14Gj-Pmjhaga31myDqS33zBZqUpo5Y3xPf5Tmzvc=s96-c",
         "_id":"60ed4643afb6661fb026db37"
     },
+    DUMMY_PROFILE_GEN: {
+        "name":"Devshan Fernando",
+        "personalEmail":"devshan98@gmail.com",
+        "role":"none",
+        "profilePicture":null,
+        "_id":"61480f22ea7908258095a1e0"
+    },
 });
