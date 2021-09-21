@@ -144,7 +144,7 @@ const userSchema = new Schema({
     reports: [new Schema ({
         reportId: {
             type: Schema.Types.ObjectId,
-            required: true,
+            required: false,
             ref: 'Report'
         },
         reportedBy: {
