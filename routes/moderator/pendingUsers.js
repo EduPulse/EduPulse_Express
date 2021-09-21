@@ -24,7 +24,8 @@ router.get('', auth.assertModerator, function (req, res, next) {
 
         let users = await User.find({
             'academic.state': 'in review',
-            academicInstitute: await getUserInstitute()
+            academicInstitute: await getUserInstitute(),
+            role: 'general'
         }, [
             'name', 
             'personalEmail', 
