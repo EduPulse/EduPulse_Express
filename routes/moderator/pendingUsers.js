@@ -95,6 +95,7 @@ router.put('/', auth.assertModerator, (req, res, next) => {
         }
 
         let update = {
+            role: (json.state === 'academic') ? 'academic' : 'general',
             academic: {
                 state: json.state,
             }
