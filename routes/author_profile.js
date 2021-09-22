@@ -57,4 +57,26 @@ router.post('/report_author', async function (req, res, next) {
     }
 });
 
+router.post('/check_reportAbility', function (req, res, next) {
+    console.log("req.body CHECK REPORT ABILITY: ", req.body);
+    try {
+        const userID = req.body.university_id;
+        const reporterID = req.body.reportedBy_ID;
+
+        User.findOne({_id: userID, reportedBy: reporterID}).populate('').exec(function(err, result) {
+            if(err) {
+                console.error(err);
+                res.sendStatus(500);
+            }
+            if (res.json(result)) {
+                res.json({reportAbility: true});
+            } else {
+                res.json({reportAbility: false});
+            }
+        })
+    } catch (error) {
+        res.sendStatus(500)
+    }
+})
+
 module.exports = router;

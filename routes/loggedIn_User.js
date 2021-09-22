@@ -229,7 +229,7 @@ router.post('/set_unFollowAuthor', function (req, res, next) {
 router.post('/get_university', function (req, res, next) {
     console.log(req.body);
     try {
-        let uniID = req.body.university_id.toString();
+        let uniID = req.body.university_id;
         Institute.findOne({_id: uniID}).populate('').exec(function(err, result) {
             if(err) {
                 console.error(err);
