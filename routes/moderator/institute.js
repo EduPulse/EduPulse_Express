@@ -35,7 +35,13 @@ router.get('', auth.assertModerator, function (req, res) {
                 let: {instituteId: "$_id"},
                 pipeline: [ 
                     { $match: {
-                        $expr: { $eq: ["$$instituteId", "$academicInstitute"] }
+                        $expr: { 
+                            $eq: ['$$instituteId', '$academicInstitute']
+                        },
+                        'academic.state': 'academic',
+                        role: {
+                            $in: ['academic', 'moderator']
+                        }
                     } },
                     { $project: { _id: 1 } } 
                 ]
