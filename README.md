@@ -1,1 +1,6 @@
-# EduPulse_Express
+# EduPulse
+![EduPulse Logo](https://res.cloudinary.com/edupulse/image/upload/v1632277059/Article_Media/Images/wpbcufhgmww4c737p576.png)
+---
+*EduPulse* is a website for unlimited **free** resource sharing and accessing. There you can find articles, videos, audios, and pdf like content related to different subject areas. Users need not to have an account to access materials in the site. However, they need to have an account if they want to react or comment to published content.
+*EduPulse* is not a site which allows anyone to publish content. It assures the quality of the content up to a certain level. Which means, only the academic community from UGC approved universities are allowed to publish content for the time being. In simple words undergraduates, assistant lecturers, and lecturers are allowed to publish the content. *EduPulse* also make sure the publishers are truly from university community, before allowing them to publish any content. There are moderators per each academic institute for the verification of user accounts. Before publishing any article, system itself checks and filters content of the article.
+*EduPulse* is one of the best platforms which bring quality content along with unlimited free accessing and sharing privileges.
